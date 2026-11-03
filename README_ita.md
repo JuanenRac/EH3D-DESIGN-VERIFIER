@@ -6,7 +6,7 @@
 
 <p align="center"><a href="README.md">🇺🇸 English</a> | <a href="README_spa.md">🇪🇸 Español</a> | <a href="README_fra.md">🇫🇷 Français</a> | 🇮🇹 <b>Italiano</b> | <a href="README_deu.md">🇩🇪 Deutsch</a> | <a href="README_zho.md">🇨🇳 中文</a> | <a href="README_jpn.md">🇯🇵 日本語</a> | <a href="README_por.md">🇵🇹 Português</a></p>
 
-### EH3D-DESIGN-VERIFIER: pianificato come un verificatore di ingegneria con validazioni incrociate e controllo qualità del progetto. Ancora senza codice.
+### EH3D-DESIGN-VERIFIER: la verifica integrale di un progetto in un rapporto che separa i guasti confermati dai risultati non conclusivi. Codice iniziale.
 
 <p align="center">
   <img src="https://img.shields.io/badge/License-GPL%203.0--or--later-blue.svg" alt="GPL 3.0 or later">
@@ -19,7 +19,7 @@
 
 ---
 
-**Verifica di onestà - cosa funziona oggi:** niente. EH3D-DESIGN-VERIFIER è solo pianificato: non ha codice, né test propri, e non è mai stato eseguito. Esistono la base che ogni repository della suite porta con sé, più l'ambito, i requisiti, le dipendenze, il modello delle minacce e le decisioni scritti in `docs/`.
+**Verifica di onestà - cosa funziona oggi:** una libreria Rust e una riga di comando che raccolgono da un file JSON i risultati dei controlli di un progetto, verificano che ogni rilievo abbia un codice ben formato e nomini il suo oggetto, ed emettono un verdetto: fallito se un guasto è confermato, non conclusivo se qualcosa non ha potuto essere deciso o un'area richiesta non è stata eseguita, superato altrimenti. Il rapporto è canonico (gli stessi risultati danno lo stesso rapporto e lo stesso hash) e può essere stampato oscurato, con soli conteggi. Tutto è stato eseguito solo su dati prodotti dai propri test. Non esistono: i controlli veri e propri, il confronto con un profilo di produzione e l'esportazione di un documento di revisione.
 
 ---
 
@@ -46,14 +46,14 @@ Ogni riga è una parte di questo repository e il semaforo dice a che punto è og
 | Area | Stato | Cosa significa qui |
 |---|---|---|
 | Controlli del repository | 🟡 | Il controllo del repository, quello delle immagini e i 3 test della base girano nella CI e passano. |
-| Test | 🟠 | Solo la base ha test (3); il codice del repository avrà i propri man mano che viene scritto. |
+| Test | 🟡 | I 13 test del codice Rust e i 3 della base passano su un computer. Usano solo dati prodotti dai test stessi. |
 | Hardware reale | 🟠 | Non eseguito su nessuna macchina né scheda: nulla qui è stato provato su hardware. |
-| Funzione pianificata | 🔴 | Non iniziata: nulla della funzione pianificata è stato scritto. |
-| Requisiti | 🔴 | Tutti i requisiti sono solo pianificati: nessuno è implementato o verificato. |
+| Funzione pianificata | 🟠 | Scritto: la classificazione dei rilievi con codici stabili, l'identità dell'oggetto, la separazione di confermato e non conclusivo, il rapporto canonico e la modalità oscurata. Non scritto: i controlli, il confronto con un profilo di produzione e il documento di revisione. |
+| Requisiti | 🟠 | 5 dei 7 requisiti sono a livello di prototipo; il confronto con un profilo di produzione (DVER-005) e il documento di revisione (DVER-006) sono solo pianificati. Nessuno è validato. |
 
 ## 🎯 Panoramica
 
-* **Pianificato:** EH3D-DESIGN-VERIFIER vuole essere un verificatore di ingegneria con validazioni incrociate e controllo qualità del progetto. È pensato come una libreria senza finestra, con interfaccia a riga di comando e, quando serve, un tipo di attività del server. Nulla di tutto questo esiste ancora.
+* **Cosa esiste:** una libreria e una riga di comando, senza finestra, che leggono i risultati dei controlli, emettono il verdetto (`report`, anche `--redacted`) e stampano l'hash del rapporto canonico (`hash`). **Pianificato:** i controlli, il confronto con un profilo di produzione, il documento di revisione e un tipo di attività del server.
 
 ## 🧩 Ruolo in EH3D
 
@@ -105,6 +105,8 @@ EH3D-DESIGN-VERIFIER/
 │   ├── NOT_YET.md RULES.md                      idee per dopo e regole per scrivere il codice
 │   └── adr/                                     i registri delle decisioni accettate
 ├── AGENTS.md                                    regole per chi modifica il repository
+├── src/                                         la libreria e la riga di comando
+├── Cargo.toml  deny.toml                        pacchetto Rust e politica delle dipendenze
 ├── tools/                                       il controllo del repository, i suoi test e gli strumenti delle immagini
 ├── images/                                      banner e le immagini di Architettura e Struttura del repository
 ├── .github/                                     workflow di CI e della dashboard, modelli di issue e pull request
@@ -121,7 +123,7 @@ EH3D-DESIGN-VERIFIER/
 
 **Limiti noti oggi**
 
-* Solo pianificato: non c'è codice, non è stato eseguito nulla e nessun requisito è implementato.
+* Codice iniziale: eseguito solo su dati dei propri test; non esegue alcun controllo da sé e non legge un progetto.
 
 **Prossimi passi**
 

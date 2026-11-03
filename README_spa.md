@@ -6,7 +6,7 @@
 
 <p align="center"><a href="README.md">🇺🇸 English</a> | 🇪🇸 <b>Español</b> | <a href="README_fra.md">🇫🇷 Français</a> | <a href="README_ita.md">🇮🇹 Italiano</a> | <a href="README_deu.md">🇩🇪 Deutsch</a> | <a href="README_zho.md">🇨🇳 中文</a> | <a href="README_jpn.md">🇯🇵 日本語</a> | <a href="README_por.md">🇵🇹 Português</a></p>
 
-### EH3D-DESIGN-VERIFIER: planificado como un verificador de ingeniería con validaciones cruzadas y control de calidad del diseño. Todavía sin código.
+### EH3D-DESIGN-VERIFIER: la verificación integral de un diseño en un informe que separa los fallos confirmados de los resultados no concluyentes. Código inicial.
 
 <p align="center">
   <img src="https://img.shields.io/badge/License-GPL%203.0--or--later-blue.svg" alt="GPL 3.0 or later">
@@ -19,7 +19,7 @@
 
 ---
 
-**Comprobación de honestidad - lo que se ejecuta hoy:** nada. EH3D-DESIGN-VERIFIER solo está planificado: no tiene código, ni pruebas propias, y nunca se ha ejecutado. Lo que existe es la base que lleva todo repositorio de la suite, más el alcance, los requisitos, las dependencias, el modelo de amenazas y las decisiones escritos en `docs/`.
+**Comprobación de honestidad - lo que se ejecuta hoy:** una biblioteca de Rust y una línea de comandos que reúnen de un fichero JSON los resultados de las comprobaciones de un diseño, comprueban que cada hallazgo tiene un código bien formado y nombra su objeto, y dan un veredicto: fallo si un fallo está confirmado, no concluyente si algo no pudo decidirse o no se ejecutó un área requerida, y correcto en otro caso. El informe es canónico (los mismos resultados dan el mismo informe y el mismo hash) y puede imprimirse censurado, solo con recuentos. Todo se ha ejecutado solo con datos hechos por sus propias pruebas. Lo que no existe: las comprobaciones en sí, la comparación con un perfil de fabricación y la exportación de un documento de revisión.
 
 ---
 
@@ -46,14 +46,14 @@ Cada línea es una parte de este repositorio y la luz dice hasta dónde llega ho
 | Área | Estado | Qué significa aquí |
 |---|---|---|
 | Comprobaciones del repositorio | 🟡 | La comprobación del repositorio, la de las imágenes y las 3 pruebas de la base se ejecutan en el CI y pasan. |
-| Pruebas | 🟠 | Solo la base tiene pruebas (3); el código del repositorio tendrá las suyas a medida que se escriba. |
+| Pruebas | 🟡 | Las 13 pruebas del código Rust y las 3 de la base pasan en un ordenador. Usan solo datos hechos por las propias pruebas. |
 | Hardware real | 🟠 | No se ha ejecutado en ninguna máquina ni placa: nada de aquí se ha probado en hardware. |
-| Función planificada | 🔴 | Sin empezar: nada de la función planificada está escrito. |
-| Requisitos | 🔴 | Todos los requisitos están solo planificados: ninguno está implementado ni verificado. |
+| Función planificada | 🟠 | Escrito: la clasificación de hallazgos con códigos estables, la identidad del objeto, la separación de confirmado y no concluyente, el informe canónico y el modo censurado. Sin escribir: las comprobaciones, la comparación con un perfil de fabricación y el documento de revisión. |
+| Requisitos | 🟠 | 5 de los 7 requisitos están en prototipo; la comparación con un perfil de fabricación (DVER-005) y el documento de revisión (DVER-006) solo están planificados. Ninguno está validado. |
 
 ## 🎯 Resumen
 
-* **Planificado:** EH3D-DESIGN-VERIFIER pretende ser un verificador de ingeniería con validaciones cruzadas y control de calidad del diseño. Se planea como una biblioteca sin ventana, con interfaz de línea de comandos y, cuando proceda, un tipo de tarea del servidor. Nada de esto existe todavía.
+* **Lo que existe:** una biblioteca y una línea de comandos, sin ventana, que leen los resultados de las comprobaciones, dan el veredicto (`report`, también `--redacted`) y muestran el hash del informe canónico (`hash`). **Planificado:** las comprobaciones, la comparación con un perfil de fabricación, el documento de revisión y un tipo de tarea del servidor.
 
 ## 🧩 Papel en EH3D
 
@@ -105,6 +105,8 @@ EH3D-DESIGN-VERIFIER/
 │   ├── NOT_YET.md RULES.md                      ideas para más adelante y reglas para escribir código
 │   └── adr/                                     los registros de decisiones aceptadas
 ├── AGENTS.md                                    reglas para quien cambia el repositorio
+├── src/                                         la biblioteca y la línea de comandos
+├── Cargo.toml  deny.toml                        paquete de Rust y política de dependencias
 ├── tools/                                       la comprobación del repositorio, sus pruebas y las herramientas de las imágenes
 ├── images/                                      banner y las imágenes de Arquitectura y Estructura del repositorio
 ├── .github/                                     flujos de CI y del panel, plantillas de issues y pull requests
@@ -121,7 +123,7 @@ EH3D-DESIGN-VERIFIER/
 
 **Límites conocidos hoy**
 
-* Solo planificado: no hay código, no se ha ejecutado nada y ningún requisito está implementado.
+* Código inicial: solo se ha ejecutado con datos hechos por sus propias pruebas; no ejecuta ninguna comprobación por sí mismo ni lee un diseño.
 
 **Siguiente**
 

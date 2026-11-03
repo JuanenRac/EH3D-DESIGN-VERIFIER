@@ -6,7 +6,7 @@
 
 <p align="center">🇺🇸 <b>English</b> | <a href="README_spa.md">🇪🇸 Español</a> | <a href="README_fra.md">🇫🇷 Français</a> | <a href="README_ita.md">🇮🇹 Italiano</a> | <a href="README_deu.md">🇩🇪 Deutsch</a> | <a href="README_zho.md">🇨🇳 中文</a> | <a href="README_jpn.md">🇯🇵 日本語</a> | <a href="README_por.md">🇵🇹 Português</a></p>
 
-### EH3D-DESIGN-VERIFIER: planned as an engineering verifier with cross-checks and quality control of the design. No code yet.
+### EH3D-DESIGN-VERIFIER: the integral verification of a design in one report that keeps confirmed failures apart from inconclusive results. Early code.
 
 <p align="center">
   <img src="https://img.shields.io/badge/License-GPL%203.0--or--later-blue.svg" alt="GPL 3.0 or later">
@@ -19,7 +19,7 @@
 
 ---
 
-**Honesty check - what actually runs today:** nothing. EH3D-DESIGN-VERIFIER is only planned: it has no code, no tests of its own and has never run. What exists is the base every repository of the suite carries, plus the written scope, requirements, dependencies, threat model and decisions in `docs/`.
+**Honesty check - what actually runs today:** a Rust library and a command line that gather the results of the checks of a design from a JSON file, check that every finding has a well-formed code and names its object, and give a verdict: fail when a failure is confirmed, inconclusive when something could not be decided or a required area did not run, pass otherwise. The report is canonical (the same results give the same report and the same hash) and can be printed redacted, with counts only. All of it has run only on data made by its own tests. What does not exist: the checks themselves, the comparison with a manufacturing profile and the export of a review document.
 
 ---
 
@@ -46,14 +46,14 @@ Each line is one part of this repository and the light says how far it is today.
 | Area | State | What it means here |
 |---|---|---|
 | Repository checks | 🟡 | The repository check, the check of the pictures and the 3 tests of the base run in CI and pass. |
-| Tests | 🟠 | Only the base has tests (3); the code of the repository will get its own as it is written. |
+| Tests | 🟡 | 13 tests of the Rust code and the 3 of the base pass on a computer. They use only data made by the tests themselves. |
 | Real hardware | 🟠 | Not run on any machine or board: nothing here has been tried on hardware. |
-| Planned function | 🔴 | Not started: none of the planned function has been written. |
-| Requirements | 🔴 | Every requirement is only planned: none is implemented or verified. |
+| Planned function | 🟠 | Written: the classification of findings with stable codes, the identity of the object, the separation of confirmed from inconclusive, the canonical report and the redacted mode. Not written: the checks, the comparison with a manufacturing profile and the review document. |
+| Requirements | 🟠 | 5 of the 7 requirements are at prototype; the comparison with a manufacturing profile (DVER-005) and the review document (DVER-006) are only planned. None is validated. |
 
 ## 🎯 Overview
 
-* **Planned:** EH3D-DESIGN-VERIFIER is meant to be an engineering verifier with cross-checks and quality control of the design. It is planned as a library without a window, with a command-line interface and, when it applies, a kind of server task. None of this exists yet.
+* **What exists:** a library and a command line, without a window, that read the results of the checks, give the verdict (`report`, also `--redacted`) and print the hash of the canonical report (`hash`). **Planned:** the checks, the comparison with a manufacturing profile, the review document and a kind of server task.
 
 ## 🧩 Role in EH3D
 
@@ -105,6 +105,8 @@ EH3D-DESIGN-VERIFIER/
 │   ├── NOT_YET.md RULES.md                      ideas left for later and rules for writing code
 │   └── adr/                                     the accepted decision records
 ├── AGENTS.md                                    rules for anyone who changes the repository
+├── src/                                         the library and the command line
+├── Cargo.toml  deny.toml                        Rust package and policy of the dependencies
 ├── tools/                                       the repository check, its tests and the picture tools
 ├── images/                                      banner and the Architecture and Repository Structure pictures
 ├── .github/                                     CI and dashboard workflows, issue and pull-request templates
@@ -121,7 +123,7 @@ EH3D-DESIGN-VERIFIER/
 
 **Known limits today**
 
-* Planned only: there is no code, nothing has been run and no requirement is implemented.
+* Early code: it has only run on data made by its own tests; it runs no check itself and does not read a design.
 
 **Next**
 

@@ -1,15 +1,15 @@
 # EH3D-DESIGN-VERIFIER: requirements
 
-This register is the single source of the state of each capability. Status values: planned, prototype, implemented, validated. Every requirement is `planned` today: nothing is implemented or verified. High test coverage is not proof of geometric or electrical correctness, so each requirement says how it will be checked and what result is expected.
+This register is the single source of the state of each capability. Status values: planned, prototype, implemented, validated. Five requirements are `prototype` (code and tests exist, only on data made by the tests) and two are `planned` (DVER-005 and DVER-006); none has been used on real data or validated. High test coverage is not proof of geometric or electrical correctness, so each requirement says how it will be checked and what result is expected.
 
 | Requirement | Description | Status | How it will be checked | Expected result | Known limits |
 |---|---|---|---|---|---|
-| DVER-001 | Classify findings as error, warning or information with a stable code. | planned | automatic: reference cases | Each reference case yields the expected code and severity. | Not started: no limits known yet. |
-| DVER-002 | Link every finding to the stable identity of the affected object. | planned | automatic | No finding without an object, unless the finding is about the whole design. | Not started: no limits known yet. |
-| DVER-003 | Reproduce a report: same design and same rule version give the same result. | planned | automatic: regeneration of an older report | Identical findings and identical canonical report. | Not started: no limits known yet. |
-| DVER-004 | Distinguish confirmed failures from inconclusive results. | planned | automatic: cases that cannot be decided | An undecidable case is never reported as pass. | Not started: no limits known yet. |
+| DVER-001 | Classify findings as error, warning or information with a stable code. | prototype | automatic: reference cases | Each reference case yields the expected code and severity. | Checks the form of the code (PHOENIX-<AREA>-<NNN>) and keeps the severity the check gave; it does not decide whether a severity is right. |
+| DVER-002 | Link every finding to the stable identity of the affected object. | prototype | automatic | No finding without an object, unless the finding is about the whole design. | A finding must name an object or say that it is about the whole design; whether the identity exists in the design is not checked, because the design is not read. |
+| DVER-003 | Reproduce a report: same design and same rule version give the same result. | prototype | automatic: regeneration of an older report | Identical findings and identical canonical report. | The report is sorted and hashed from the results it was given; regenerating an older report needs the checks themselves, which are not here. |
+| DVER-004 | Distinguish confirmed failures from inconclusive results. | prototype | automatic: cases that cannot be decided | An undecidable case is never reported as pass. | An inconclusive finding (other than information) or a required area that did not run makes the verdict inconclusive; a confirmed failure still wins. |
 | DVER-005 | Check a design against a manufacturing profile and give the remedy. | planned | automatic | A violation names the profile limit and what to change. | Not started: no limits known yet. |
 | DVER-006 | Export a design-review report. | planned | automatic plus review | The report lists rules, data and versions used. | Not started: no limits known yet. |
-| DVER-007 | Report on a private corpus in redacted mode. | planned | automatic: leak test | Only codes, severities and counts leave the machine. | Not started: no limits known yet. |
+| DVER-007 | Report on a private corpus in redacted mode. | prototype | automatic: leak test | Only codes, severities and counts leave the machine. | The redacted mode prints counts by code, severity and state, and codes of problems; it is tested for leaks of the message and the object. The full report prints names. |
 
 Rules: a claim of correctness names the corpus, the tolerance and the tool version it holds for. A phase is complete when the measured rate does not drop, every failure is classified and fixed or documented, and the measured figure is reported.

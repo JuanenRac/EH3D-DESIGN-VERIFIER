@@ -6,7 +6,7 @@
 
 <p align="center"><a href="README.md">🇺🇸 English</a> | <a href="README_spa.md">🇪🇸 Español</a> | <a href="README_fra.md">🇫🇷 Français</a> | <a href="README_ita.md">🇮🇹 Italiano</a> | 🇩🇪 <b>Deutsch</b> | <a href="README_zho.md">🇨🇳 中文</a> | <a href="README_jpn.md">🇯🇵 日本語</a> | <a href="README_por.md">🇵🇹 Português</a></p>
 
-### EH3D-DESIGN-VERIFIER: geplant als ein Engineering-Verifizierer mit Kreuzprüfungen und Qualitätskontrolle des Entwurfs. Noch kein Code.
+### EH3D-DESIGN-VERIFIER: die integrale Prüfung eines Entwurfs in einem Bericht, der bestätigte Fehler von nicht entscheidbaren Ergebnissen trennt. Früher Code.
 
 <p align="center">
   <img src="https://img.shields.io/badge/License-GPL%203.0--or--later-blue.svg" alt="GPL 3.0 or later">
@@ -19,7 +19,7 @@
 
 ---
 
-**Ehrlichkeitscheck - was heute tatsächlich läuft:** nichts. EH3D-DESIGN-VERIFIER ist nur geplant: Es gibt keinen Code, keine eigenen Tests, und es ist nie gelaufen. Vorhanden sind die Basis, die jedes Repository der Suite trägt, sowie Umfang, Anforderungen, Abhängigkeiten, Bedrohungsmodell und Entscheidungen in `docs/`.
+**Ehrlichkeitscheck - was heute tatsächlich läuft:** eine Rust-Bibliothek und eine Befehlszeile, die die Ergebnisse der Prüfungen eines Entwurfs aus einer JSON-Datei sammeln, prüfen, dass jeder Befund einen wohlgeformten Code hat und sein Objekt nennt, und ein Urteil fällen: fehlgeschlagen bei einem bestätigten Fehler, nicht entscheidbar, wenn etwas nicht entschieden werden konnte oder ein verlangter Bereich nicht lief, sonst bestanden. Der Bericht ist kanonisch (gleiche Ergebnisse ergeben denselben Bericht und denselben Hash) und kann geschwärzt, nur mit Zählungen, ausgegeben werden. Alles lief nur mit Daten, die die eigenen Tests erzeugen. Es fehlen: die Prüfungen selbst, der Vergleich mit einem Fertigungsprofil und der Export eines Prüfdokuments.
 
 ---
 
@@ -46,14 +46,14 @@ Jede Zeile ist ein Teil dieses Repositorys, und die Ampel sagt, wie weit er heut
 | Bereich | Stand | Was das hier bedeutet |
 |---|---|---|
 | Repository-Prüfungen | 🟡 | Die Repository-Prüfung, die Prüfung der Bilder und die 3 Tests der Basis laufen in der CI und bestehen. |
-| Tests | 🟠 | Nur die Basis hat Tests (3); der Code des Repositorys bekommt seine eigenen, sobald er geschrieben wird. |
+| Tests | 🟡 | Die 13 Tests des Rust-Codes und die 3 der Basis bestehen auf einem Rechner. Sie verwenden nur Daten, die die Tests selbst erzeugen. |
 | Echte Hardware | 🟠 | Auf keiner Maschine und keiner Platine ausgeführt: nichts hier wurde auf Hardware ausprobiert. |
-| Geplante Funktion | 🔴 | Nicht begonnen: Von der geplanten Funktion ist nichts geschrieben. |
-| Anforderungen | 🔴 | Alle Anforderungen sind nur geplant: Keine ist umgesetzt oder geprüft. |
+| Geplante Funktion | 🟠 | Geschrieben: die Einordnung der Befunde mit stabilen Codes, die Identität des Objekts, die Trennung von bestätigt und nicht entscheidbar, der kanonische Bericht und der geschwärzte Modus. Nicht geschrieben: die Prüfungen, der Vergleich mit einem Fertigungsprofil und das Prüfdokument. |
+| Anforderungen | 🟠 | 5 der 7 Anforderungen sind im Prototyp; der Vergleich mit einem Fertigungsprofil (DVER-005) und das Prüfdokument (DVER-006) sind nur geplant. Keine ist validiert. |
 
 ## 🎯 Überblick
 
-* **Geplant:** EH3D-DESIGN-VERIFIER soll ein Engineering-Verifizierer mit Kreuzprüfungen und Qualitätskontrolle des Entwurfs werden. Vorgesehen ist eine Bibliothek ohne Fenster mit Kommandozeile und, wo es passt, einer Art Server-Aufgabe. Nichts davon existiert bisher.
+* **Was es gibt:** eine Bibliothek und eine Befehlszeile ohne Fenster, die die Ergebnisse der Prüfungen lesen, das Urteil fällen (`report`, auch `--redacted`) und den Hash des kanonischen Berichts ausgeben (`hash`). **Geplant:** die Prüfungen, der Vergleich mit einem Fertigungsprofil, das Prüfdokument und eine Art Serveraufgabe.
 
 ## 🧩 Rolle in EH3D
 
@@ -105,6 +105,8 @@ EH3D-DESIGN-VERIFIER/
 │   ├── NOT_YET.md RULES.md                      Ideen für später und Regeln zum Schreiben von Code
 │   └── adr/                                     die angenommenen Entscheidungsprotokolle
 ├── AGENTS.md                                    Regeln für alle, die das Repository ändern
+├── src/                                         die Bibliothek und die Befehlszeile
+├── Cargo.toml  deny.toml                        Rust-Paket und Richtlinie der Abhängigkeiten
 ├── tools/                                       die Repository-Prüfung, ihre Tests und die Bild-Werkzeuge
 ├── images/                                      Banner und die Bilder von Architektur und Repository-Struktur
 ├── .github/                                     CI- und Dashboard-Workflows, Vorlagen für Issues und Pull Requests
@@ -121,7 +123,7 @@ EH3D-DESIGN-VERIFIER/
 
 **Bekannte Grenzen heute**
 
-* Nur geplant: Es gibt keinen Code, nichts wurde ausgeführt und keine Anforderung ist umgesetzt.
+* Früher Code: nur mit Daten der eigenen Tests ausgeführt; er führt selbst keine Prüfung aus und liest keinen Entwurf.
 
 **Als Nächstes**
 

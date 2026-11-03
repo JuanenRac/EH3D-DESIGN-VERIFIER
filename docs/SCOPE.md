@@ -1,6 +1,6 @@
 # EH3D-DESIGN-VERIFIER: scope
 
-Status: **planned**. EH3D-DESIGN-VERIFIER has no code. This page says what it is meant to do, what it will not do, and where it sits. Nothing here has been built or run.
+Status: **early code**. EH3D-DESIGN-VERIFIER has a library and a command line that gather the results of the checks and give a verdict; most of what this page lists is still planned. This page says what it is meant to do, what it will not do, and where it sits. Nothing has been run on a real design.
 
 ## Purpose
 
@@ -29,7 +29,7 @@ Integral engineering verifier: collects the electrical, geometric, mechanical, t
 
 A library without a window, written in Rust (planned), with a command-line interface and, where it applies, a kind of task for the server. Programs of the suite exchange work through project files or through the server, never by depending on each other.
 
-Crates, names and file layout will be decided together with the first code; no crate exists yet.
+The package is a single crate (a library and a command line, no window) with `report` and `hash`; the results of the checks are a JSON file. The checks themselves, the comparison with a manufacturing profile and the review document are not written.
 
 ## Where it sits
 
