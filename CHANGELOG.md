@@ -3,6 +3,7 @@
 All notable changes to this project are documented here.
 
 ## [Unreleased]
+- **Brand:** Add the application icon and the logos of the program.
 - **Shared checks updated:** the validator also compares the badge and the Version row of the README with the manifest, fails when one of its checks cannot run, and the CHANGELOG step of the workflow reads the base branch from the environment.
 
 - Add the library: the results of the checks of a design as findings with a stable code, a severity, a state (confirmed or inconclusive) and the identity of the object, the report with a verdict, and the canonical order and hash of the report.
