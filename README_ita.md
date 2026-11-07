@@ -19,7 +19,7 @@
 
 ---
 
-**Verifica di onestà - cosa funziona oggi:** una libreria Rust e una riga di comando che raccolgono da un file JSON i risultati dei controlli di un progetto, verificano che ogni rilievo abbia un codice ben formato e nomini il suo oggetto, ed emettono un verdetto: fallito se un guasto è confermato, non conclusivo se qualcosa non ha potuto essere deciso o un'area richiesta non è stata eseguita, superato altrimenti. Il rapporto è canonico (gli stessi risultati danno lo stesso rapporto e lo stesso hash) e può essere stampato oscurato, con soli conteggi. Tutto è stato eseguito solo su dati prodotti dai propri test. Non esistono: i controlli veri e propri, il confronto con un profilo di produzione e l'esportazione di un documento di revisione.
+**Verifica di onestà - cosa funziona oggi:** una libreria Rust e una riga di comando che raccolgono da un file JSON i risultati dei controlli di un progetto, verificano che ogni rilievo abbia un codice ben formato e nomini il suo oggetto, ed emettono un verdetto: fallito se un guasto è confermato, non conclusivo se qualcosa non ha potuto essere deciso o un'area richiesta non è stata eseguita, superato altrimenti. Il rapporto è canonico (gli stessi risultati danno lo stesso rapporto e lo stesso hash) e può essere stampato oscurato, con soli conteggi. Il documento di revisione (`review`, anche `--redacted`) scrive il verdetto, le regole applicate, i dati usati e i rilievi come testo da archiviare e firmare. Tutto è stato eseguito solo su dati prodotti dai propri test. Non esistono: i controlli veri e propri e il confronto con un profilo di produzione.
 
 ---
 
@@ -46,14 +46,14 @@ Ogni riga è una parte di questo repository e il semaforo dice a che punto è og
 | Area | Stato | Cosa significa qui |
 |---|---|---|
 | Controlli del repository | 🟡 | Il controllo del repository, quello delle immagini e i 3 test della base girano nella CI e passano. |
-| Test | 🟡 | I 13 test del codice Rust e i 3 della base passano su un computer. Usano solo dati prodotti dai test stessi. |
+| Test | 🟡 | I 21 test del codice Rust e i 3 della base passano su un computer. Usano solo dati prodotti dai test stessi. |
 | Hardware reale | 🟠 | Non eseguito su nessuna macchina né scheda: nulla qui è stato provato su hardware. |
-| Funzione pianificata | 🟠 | Scritto: la classificazione dei rilievi con codici stabili, l'identità dell'oggetto, la separazione di confermato e non conclusivo, il rapporto canonico e la modalità oscurata. Non scritto: i controlli, il confronto con un profilo di produzione e il documento di revisione. |
-| Requisiti | 🟠 | 5 dei 7 requisiti sono a livello di prototipo; il confronto con un profilo di produzione (DVER-005) e il documento di revisione (DVER-006) sono solo pianificati. Nessuno è validato. |
+| Funzione pianificata | 🟠 | Scritto: la classificazione dei rilievi con codici stabili, l'identità dell'oggetto, la separazione di confermato e non conclusivo, il rapporto canonico, la modalità oscurata e il documento di revisione. Non scritto: i controlli e il confronto con un profilo di produzione. |
+| Requisiti | 🟠 | 6 dei 7 requisiti sono a livello di prototipo; il confronto con un profilo di produzione (DVER-005) è solo pianificato. Nessuno è validato. |
 
 ## 🎯 Panoramica
 
-* **Cosa esiste:** una libreria e una riga di comando, senza finestra, che leggono i risultati dei controlli, emettono il verdetto (`report`, anche `--redacted`) e stampano l'hash del rapporto canonico (`hash`). **Pianificato:** i controlli, il confronto con un profilo di produzione, il documento di revisione e un tipo di attività del server.
+* **Cosa esiste:** una libreria e una riga di comando, senza finestra, che leggono i risultati dei controlli, emettono il verdetto (`report`, anche `--redacted`), scrivono il documento di revisione (`review`, anche `--redacted`) e stampano l'hash del rapporto canonico (`hash`). **Pianificato:** i controlli, il confronto con un profilo di produzione e un tipo di attività del server.
 
 ## 🧩 Ruolo in EH3D
 
@@ -106,6 +106,7 @@ EH3D-DESIGN-VERIFIER/
 │   └── adr/                                     i registri delle decisioni accettate
 ├── AGENTS.md                                    regole per chi modifica il repository
 ├── src/                                         la libreria e la riga di comando
+├── config/                                      il file di impostazioni di esempio, ogni chiave con il suo valore predefinito
 ├── Cargo.toml Cargo.lock deny.toml              pacchetto Rust e politica delle dipendenze
 ├── tools/                                       il controllo del repository, i suoi test e gli strumenti delle immagini
 ├── images/                                      banner e le immagini di Architettura e Struttura del repository

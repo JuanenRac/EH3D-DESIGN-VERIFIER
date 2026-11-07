@@ -19,7 +19,7 @@
 
 ---
 
-**Ehrlichkeitscheck - was heute tatsächlich läuft:** eine Rust-Bibliothek und eine Befehlszeile, die die Ergebnisse der Prüfungen eines Entwurfs aus einer JSON-Datei sammeln, prüfen, dass jeder Befund einen wohlgeformten Code hat und sein Objekt nennt, und ein Urteil fällen: fehlgeschlagen bei einem bestätigten Fehler, nicht entscheidbar, wenn etwas nicht entschieden werden konnte oder ein verlangter Bereich nicht lief, sonst bestanden. Der Bericht ist kanonisch (gleiche Ergebnisse ergeben denselben Bericht und denselben Hash) und kann geschwärzt, nur mit Zählungen, ausgegeben werden. Alles lief nur mit Daten, die die eigenen Tests erzeugen. Es fehlen: die Prüfungen selbst, der Vergleich mit einem Fertigungsprofil und der Export eines Prüfdokuments.
+**Ehrlichkeitscheck - was heute tatsächlich läuft:** eine Rust-Bibliothek und eine Befehlszeile, die die Ergebnisse der Prüfungen eines Entwurfs aus einer JSON-Datei sammeln, prüfen, dass jeder Befund einen wohlgeformten Code hat und sein Objekt nennt, und ein Urteil fällen: fehlgeschlagen bei einem bestätigten Fehler, nicht entscheidbar, wenn etwas nicht entschieden werden konnte oder ein verlangter Bereich nicht lief, sonst bestanden. Der Bericht ist kanonisch (gleiche Ergebnisse ergeben denselben Bericht und denselben Hash) und kann geschwärzt, nur mit Zählungen, ausgegeben werden. Das Prüfdokument (`review`, auch `--redacted`) schreibt das Urteil, die angewandten Regeln, die verwendeten Daten und die Befunde als Text zum Ablegen und Unterschreiben. Alles lief nur mit Daten, die die eigenen Tests erzeugen. Es fehlen: die Prüfungen selbst und der Vergleich mit einem Fertigungsprofil.
 
 ---
 
@@ -46,14 +46,14 @@ Jede Zeile ist ein Teil dieses Repositorys, und die Ampel sagt, wie weit er heut
 | Bereich | Stand | Was das hier bedeutet |
 |---|---|---|
 | Repository-Prüfungen | 🟡 | Die Repository-Prüfung, die Prüfung der Bilder und die 3 Tests der Basis laufen in der CI und bestehen. |
-| Tests | 🟡 | Die 13 Tests des Rust-Codes und die 3 der Basis bestehen auf einem Rechner. Sie verwenden nur Daten, die die Tests selbst erzeugen. |
+| Tests | 🟡 | Die 21 Tests des Rust-Codes und die 3 der Basis bestehen auf einem Rechner. Sie verwenden nur Daten, die die Tests selbst erzeugen. |
 | Echte Hardware | 🟠 | Auf keiner Maschine und keiner Platine ausgeführt: nichts hier wurde auf Hardware ausprobiert. |
-| Geplante Funktion | 🟠 | Geschrieben: die Einordnung der Befunde mit stabilen Codes, die Identität des Objekts, die Trennung von bestätigt und nicht entscheidbar, der kanonische Bericht und der geschwärzte Modus. Nicht geschrieben: die Prüfungen, der Vergleich mit einem Fertigungsprofil und das Prüfdokument. |
-| Anforderungen | 🟠 | 5 der 7 Anforderungen sind im Prototyp; der Vergleich mit einem Fertigungsprofil (DVER-005) und das Prüfdokument (DVER-006) sind nur geplant. Keine ist validiert. |
+| Geplante Funktion | 🟠 | Geschrieben: die Einordnung der Befunde mit stabilen Codes, die Identität des Objekts, die Trennung von bestätigt und nicht entscheidbar, der kanonische Bericht, der geschwärzte Modus und das Prüfdokument. Nicht geschrieben: die Prüfungen und der Vergleich mit einem Fertigungsprofil. |
+| Anforderungen | 🟠 | 6 der 7 Anforderungen sind im Prototyp; der Vergleich mit einem Fertigungsprofil (DVER-005) ist nur geplant. Keine ist validiert. |
 
 ## 🎯 Überblick
 
-* **Was es gibt:** eine Bibliothek und eine Befehlszeile ohne Fenster, die die Ergebnisse der Prüfungen lesen, das Urteil fällen (`report`, auch `--redacted`) und den Hash des kanonischen Berichts ausgeben (`hash`). **Geplant:** die Prüfungen, der Vergleich mit einem Fertigungsprofil, das Prüfdokument und eine Art Serveraufgabe.
+* **Was es gibt:** eine Bibliothek und eine Befehlszeile ohne Fenster, die die Ergebnisse der Prüfungen lesen, das Urteil fällen (`report`, auch `--redacted`), das Prüfdokument schreiben (`review`, auch `--redacted`) und den Hash des kanonischen Berichts ausgeben (`hash`). **Geplant:** die Prüfungen, der Vergleich mit einem Fertigungsprofil und eine Art Serveraufgabe.
 
 ## 🧩 Rolle in EH3D
 
@@ -106,6 +106,7 @@ EH3D-DESIGN-VERIFIER/
 │   └── adr/                                     die angenommenen Entscheidungsprotokolle
 ├── AGENTS.md                                    Regeln für alle, die das Repository ändern
 ├── src/                                         die Bibliothek und die Befehlszeile
+├── config/                                      die Beispiel-Einstellungsdatei, jeder Schlüssel mit seinem Standardwert
 ├── Cargo.toml Cargo.lock deny.toml              Rust-Paket und Richtlinie der Abhängigkeiten
 ├── tools/                                       die Repository-Prüfung, ihre Tests und die Bild-Werkzeuge
 ├── images/                                      Banner und die Bilder von Architektur und Repository-Struktur

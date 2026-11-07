@@ -19,7 +19,7 @@
 
 ---
 
-**Verificação de honestidade - o que corre hoje:** uma biblioteca Rust e uma linha de comandos que reúnem, de um ficheiro JSON, os resultados das verificações de um projeto, confirmam que cada achado tem um código bem formado e nomeia o seu objeto, e dão um veredicto: falha se uma falha estiver confirmada, inconclusivo se algo não pôde ser decidido ou uma área exigida não correu, e aprovado nos restantes casos. O relatório é canónico (os mesmos resultados dão o mesmo relatório e o mesmo hash) e pode ser impresso censurado, só com contagens. Tudo correu apenas com dados feitos pelos próprios testes. O que não existe: as verificações em si, a comparação com um perfil de fabrico e a exportação de um documento de revisão.
+**Verificação de honestidade - o que corre hoje:** uma biblioteca Rust e uma linha de comandos que reúnem, de um ficheiro JSON, os resultados das verificações de um projeto, confirmam que cada achado tem um código bem formado e nomeia o seu objeto, e dão um veredicto: falha se uma falha estiver confirmada, inconclusivo se algo não pôde ser decidido ou uma área exigida não correu, e aprovado nos restantes casos. O relatório é canónico (os mesmos resultados dão o mesmo relatório e o mesmo hash) e pode ser impresso censurado, só com contagens. O documento de revisão (`review`, também `--redacted`) escreve o veredicto, as regras aplicadas, os dados usados e os achados como texto para arquivar e assinar. Tudo correu apenas com dados feitos pelos próprios testes. O que não existe: as verificações em si e a comparação com um perfil de fabrico.
 
 ---
 
@@ -46,14 +46,14 @@ Cada linha é uma parte deste repositório e a luz diz até onde chega hoje. É 
 | Área | Estado | O que significa aqui |
 |---|---|---|
 | Verificações do repositório | 🟡 | A verificação do repositório, a das imagens e os 3 testes da base correm na CI e passam. |
-| Testes | 🟡 | Os 13 testes do código Rust e os 3 da base passam num computador. Usam apenas dados feitos pelos próprios testes. |
+| Testes | 🟡 | Os 21 testes do código Rust e os 3 da base passam num computador. Usam apenas dados feitos pelos próprios testes. |
 | Hardware real | 🟠 | Não foi executado em nenhuma máquina nem placa: nada aqui foi experimentado em hardware. |
-| Função planeada | 🟠 | Escrito: a classificação dos achados com códigos estáveis, a identidade do objeto, a separação entre confirmado e inconclusivo, o relatório canónico e o modo censurado. Por escrever: as verificações, a comparação com um perfil de fabrico e o documento de revisão. |
-| Requisitos | 🟠 | 5 dos 7 requisitos estão em protótipo; a comparação com um perfil de fabrico (DVER-005) e o documento de revisão (DVER-006) estão apenas planeados. Nenhum está validado. |
+| Função planeada | 🟠 | Escrito: a classificação dos achados com códigos estáveis, a identidade do objeto, a separação entre confirmado e inconclusivo, o relatório canónico, o modo censurado e o documento de revisão. Por escrever: as verificações e a comparação com um perfil de fabrico. |
+| Requisitos | 🟠 | 6 dos 7 requisitos estão em protótipo; a comparação com um perfil de fabrico (DVER-005) está apenas planeada. Nenhum está validado. |
 
 ## 🎯 Visão geral
 
-* **O que existe:** uma biblioteca e uma linha de comandos, sem janela, que leem os resultados das verificações, dão o veredicto (`report`, também `--redacted`) e mostram o hash do relatório canónico (`hash`). **Planeado:** as verificações, a comparação com um perfil de fabrico, o documento de revisão e um tipo de tarefa do servidor.
+* **O que existe:** uma biblioteca e uma linha de comandos, sem janela, que leem os resultados das verificações, dão o veredicto (`report`, também `--redacted`), escrevem o documento de revisão (`review`, também `--redacted`) e mostram o hash do relatório canónico (`hash`). **Planeado:** as verificações, a comparação com um perfil de fabrico e um tipo de tarefa do servidor.
 
 ## 🧩 Papel no EH3D
 
@@ -106,6 +106,7 @@ EH3D-DESIGN-VERIFIER/
 │   └── adr/                                     os registos das decisões aceites
 ├── AGENTS.md                                    regras para quem altera o repositório
 ├── src/                                         a biblioteca e a linha de comandos
+├── config/                                      o ficheiro de definições de exemplo, cada chave com o seu valor por defeito
 ├── Cargo.toml Cargo.lock deny.toml              pacote Rust e política das dependências
 ├── tools/                                       a verificação do repositório, os seus testes e as ferramentas das imagens
 ├── images/                                      banner e as imagens de Arquitetura e Estrutura do repositório

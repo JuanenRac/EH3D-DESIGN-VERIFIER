@@ -4,6 +4,10 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **Review document:** add the `review` command (also `review --redacted`), which writes the report as text to file and sign: the verdict, the rule version, the hash of the report, the version of the tool, the areas that were run, required and missing, the rules applied with the number of findings of each, the findings by severity and the problems found in the results. The same report always gives the same text, text from the results cannot break its layout, and the redacted form carries only codes, severities, states and counts.
+- **New setting:** `review_max_findings` (default 200) limits the findings listed one by one in the review; the rest are counted. `config/verifier.cfg` is the example settings file and a test requires it to equal the defaults of the code.
+- **The report keeps the areas that were run**, in lower case and in order, so that the review can say which required areas are missing.
+
 ## [0.0.2] - First release: the library, the command line, the stable error codes and the tests
 
 - **Brand:** Add the application icon and the logos of the program.

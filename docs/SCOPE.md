@@ -29,7 +29,7 @@ Integral engineering verifier: collects the electrical, geometric, mechanical, t
 
 A library without a window, written in Rust (planned), with a command-line interface and, where it applies, a kind of task for the server. Programs of the suite exchange work through project files or through the server, never by depending on each other.
 
-The package is a single crate (a library and a command line, no window) with `report` and `hash`; the results of the checks are a JSON file. The checks themselves, the comparison with a manufacturing profile and the review document are not written.
+The package is a single crate (a library and a command line, no window) with `report`, `review` and `hash`; the results of the checks are a JSON file and the settings are a file of `key = value` lines (`config/verifier.cfg` shows every key with its default). The checks themselves and the comparison with a manufacturing profile are not written.
 
 ## Where it sits
 

@@ -156,6 +156,19 @@
           "name": "src/"
         },
         {
+          "name": "config/",
+          "desc": {
+            "en": "the example settings file, every key with its default",
+            "es": "el fichero de ajustes de ejemplo, cada clave con su valor por defecto",
+            "de": "die Beispiel-Einstellungsdatei, jeder Schlüssel mit seinem Standardwert",
+            "fr": "le fichier de réglages d'exemple, chaque clé avec sa valeur par défaut",
+            "it": "il file di impostazioni di esempio, ogni chiave con il suo valore predefinito",
+            "ja": "設定ファイルの例（各キーと既定値）",
+            "zh": "示例设置文件，每个键及其默认值",
+            "pt": "o ficheiro de definições de exemplo, cada chave com o seu valor por defeito"
+          }
+        },
+        {
           "desc": {
             "en": "Rust package and policy of the dependencies",
             "es": "paquete de Rust y política de dependencias",

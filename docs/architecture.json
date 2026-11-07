@@ -1,8 +1,8 @@
 {
   "repo": "EH3D-DESIGN-VERIFIER",
   "ecosystem": "eh3d",
-  "tagline": "Planned: one verifier that gathers the checks of a design and says what is confirmed and what is inconclusive.",
-  "description": "EH3D-DESIGN-VERIFIER is planned as an engineering verifier with cross-checks and quality control of the design. Today it has the base of every repository of the suite and a written scope, requirements and dependencies; no code has been written and nothing has been run on a machine.",
+  "tagline": "Early code: one verifier that gathers the results of the checks of a design and says what is confirmed and what is inconclusive.",
+  "description": "EH3D-DESIGN-VERIFIER gathers the results of the checks of a design from a JSON file, checks that each finding has a stable code and an object, gives a verdict that keeps confirmed failures apart from inconclusive results and writes the review document. The checks themselves and the comparison with a manufacturing profile are planned. It has run only on data made by its own tests.",
   "columns": [
     "WHO USES IT",
     "THIS REPOSITORY",
@@ -36,11 +36,16 @@
     {
       "id": "code",
       "column": 1,
-      "level": "config",
-      "title": "The code",
+      "level": "tested",
+      "title": "The library and command line",
       "lines": [
-        "planned: cross-checks",
-        "and quality control"
+        "report, review and hash: the verdict,",
+        "the canonical report, the review"
+      ],
+      "code": [
+        "src/report.rs",
+        "src/review.rs",
+        "src/cli.rs"
       ]
     },
     {
@@ -51,6 +56,16 @@
       "lines": [
         "the map of the suite, the",
         "conventions and the shared checks"
+      ]
+    },
+    {
+      "id": "checks",
+      "column": 1,
+      "level": "config",
+      "title": "The checks",
+      "lines": [
+        "planned: the checks themselves and",
+        "the manufacturing profile comparison"
       ]
     }
   ],
@@ -70,7 +85,13 @@
     {
       "from": "reader",
       "to": "code",
-      "label": "writes",
+      "label": "runs",
+      "level": "tested"
+    },
+    {
+      "from": "reader",
+      "to": "checks",
+      "label": "waits for",
       "level": "config"
     }
   ],
@@ -79,5 +100,5 @@
     "config": "planned, not built",
     "external": "a person or other repositories"
   },
-  "footer": "Nothing here has been run on a machine."
+  "footer": "Run only on data made by its own tests."
 }

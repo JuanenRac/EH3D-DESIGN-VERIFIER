@@ -19,7 +19,7 @@
 
 ---
 
-**Vérification d'honnêteté - ce qui tourne aujourd'hui :** une bibliothèque Rust et une ligne de commande qui rassemblent d'un fichier JSON les résultats des contrôles d'une conception, vérifient que chaque constat a un code bien formé et nomme son objet, et rendent un verdict : échec si un échec est confirmé, non concluant si quelque chose n'a pu être tranché ou si une zone requise n'a pas tourné, réussite sinon. Le rapport est canonique (les mêmes résultats donnent le même rapport et le même hash) et peut être imprimé caviardé, avec des comptes seulement. Tout n'a tourné que sur des données faites par ses propres tests. N'existent pas : les contrôles eux-mêmes, la comparaison avec un profil de fabrication et l'export d'un document de revue.
+**Vérification d'honnêteté - ce qui tourne aujourd'hui :** une bibliothèque Rust et une ligne de commande qui rassemblent d'un fichier JSON les résultats des contrôles d'une conception, vérifient que chaque constat a un code bien formé et nomme son objet, et rendent un verdict : échec si un échec est confirmé, non concluant si quelque chose n'a pu être tranché ou si une zone requise n'a pas tourné, réussite sinon. Le rapport est canonique (les mêmes résultats donnent le même rapport et le même hash) et peut être imprimé caviardé, avec des comptes seulement. Le document de revue (`review`, aussi `--redacted`) écrit le verdict, les règles appliquées, les données utilisées et les constats sous forme de texte à archiver et à signer. Tout n'a tourné que sur des données faites par ses propres tests. N'existent pas : les contrôles eux-mêmes et la comparaison avec un profil de fabrication.
 
 ---
 
@@ -46,14 +46,14 @@ Chaque ligne est une partie de ce dépôt et le feu dit où elle en est aujourd'
 | Domaine | État | Ce que cela veut dire ici |
 |---|---|---|
 | Contrôles du dépôt | 🟡 | Le contrôle du dépôt, celui des images et les 3 tests de la base tournent dans la CI et réussissent. |
-| Tests | 🟡 | Les 13 tests du code Rust et les 3 de la base réussissent sur un ordinateur. Ils n'utilisent que des données faites par les tests eux-mêmes. |
+| Tests | 🟡 | Les 21 tests du code Rust et les 3 de la base réussissent sur un ordinateur. Ils n'utilisent que des données faites par les tests eux-mêmes. |
 | Matériel réel | 🟠 | Non exécuté sur une machine ni une carte : rien ici n'a été essayé sur du matériel. |
-| Fonction prévue | 🟠 | Écrit : la classification des constats avec des codes stables, l'identité de l'objet, la séparation du confirmé et du non concluant, le rapport canonique et le mode caviardé. Non écrit : les contrôles, la comparaison avec un profil de fabrication et le document de revue. |
-| Exigences | 🟠 | 5 des 7 exigences sont au stade de prototype ; la comparaison avec un profil de fabrication (DVER-005) et le document de revue (DVER-006) sont seulement prévues. Aucune n'est validée. |
+| Fonction prévue | 🟠 | Écrit : la classification des constats avec des codes stables, l'identité de l'objet, la séparation du confirmé et du non concluant, le rapport canonique, le mode caviardé et le document de revue. Non écrit : les contrôles et la comparaison avec un profil de fabrication. |
+| Exigences | 🟠 | 6 des 7 exigences sont au stade de prototype ; la comparaison avec un profil de fabrication (DVER-005) est seulement prévue. Aucune n'est validée. |
 
 ## 🎯 Présentation
 
-* **Ce qui existe :** une bibliothèque et une ligne de commande, sans fenêtre, qui lisent les résultats des contrôles, rendent le verdict (`report`, aussi `--redacted`) et affichent le hash du rapport canonique (`hash`). **Prévu :** les contrôles, la comparaison avec un profil de fabrication, le document de revue et un type de tâche du serveur.
+* **Ce qui existe :** une bibliothèque et une ligne de commande, sans fenêtre, qui lisent les résultats des contrôles, rendent le verdict (`report`, aussi `--redacted`), écrivent le document de revue (`review`, aussi `--redacted`) et affichent le hash du rapport canonique (`hash`). **Prévu :** les contrôles, la comparaison avec un profil de fabrication et un type de tâche du serveur.
 
 ## 🧩 Rôle dans EH3D
 
@@ -106,6 +106,7 @@ EH3D-DESIGN-VERIFIER/
 │   └── adr/                                     les décisions acceptées
 ├── AGENTS.md                                    règles pour quiconque modifie le dépôt
 ├── src/                                         la bibliothèque et la ligne de commande
+├── config/                                      le fichier de réglages d'exemple, chaque clé avec sa valeur par défaut
 ├── Cargo.toml Cargo.lock deny.toml              paquet Rust et politique des dépendances
 ├── tools/                                       le contrôle du dépôt, ses tests et les outils des images
 ├── images/                                      bannière et images d'Architecture et de Structure du dépôt

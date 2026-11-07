@@ -19,7 +19,7 @@
 
 ---
 
-**Honesty check - what actually runs today:** a Rust library and a command line that gather the results of the checks of a design from a JSON file, check that every finding has a well-formed code and names its object, and give a verdict: fail when a failure is confirmed, inconclusive when something could not be decided or a required area did not run, pass otherwise. The report is canonical (the same results give the same report and the same hash) and can be printed redacted, with counts only. All of it has run only on data made by its own tests. What does not exist: the checks themselves, the comparison with a manufacturing profile and the export of a review document.
+**Honesty check - what actually runs today:** a Rust library and a command line that gather the results of the checks of a design from a JSON file, check that every finding has a well-formed code and names its object, and give a verdict: fail when a failure is confirmed, inconclusive when something could not be decided or a required area did not run, pass otherwise. The report is canonical (the same results give the same report and the same hash) and can be printed redacted, with counts only. The review document (`review`, also `--redacted`) writes the verdict, the rules applied, the data used and the findings as text to file and sign. All of it has run only on data made by its own tests. What does not exist: the checks themselves and the comparison with a manufacturing profile.
 
 ---
 
@@ -46,14 +46,14 @@ Each line is one part of this repository and the light says how far it is today.
 | Area | State | What it means here |
 |---|---|---|
 | Repository checks | 🟡 | The repository check, the check of the pictures and the 3 tests of the base run in CI and pass. |
-| Tests | 🟡 | 13 tests of the Rust code and the 3 of the base pass on a computer. They use only data made by the tests themselves. |
+| Tests | 🟡 | 21 tests of the Rust code and the 3 of the base pass on a computer. They use only data made by the tests themselves. |
 | Real hardware | 🟠 | Not run on any machine or board: nothing here has been tried on hardware. |
-| Planned function | 🟠 | Written: the classification of findings with stable codes, the identity of the object, the separation of confirmed from inconclusive, the canonical report and the redacted mode. Not written: the checks, the comparison with a manufacturing profile and the review document. |
-| Requirements | 🟠 | 5 of the 7 requirements are at prototype; the comparison with a manufacturing profile (DVER-005) and the review document (DVER-006) are only planned. None is validated. |
+| Planned function | 🟠 | Written: the classification of findings with stable codes, the identity of the object, the separation of confirmed from inconclusive, the canonical report, the redacted mode and the review document. Not written: the checks and the comparison with a manufacturing profile. |
+| Requirements | 🟠 | 6 of the 7 requirements are at prototype; the comparison with a manufacturing profile (DVER-005) is only planned. None is validated. |
 
 ## 🎯 Overview
 
-* **What exists:** a library and a command line, without a window, that read the results of the checks, give the verdict (`report`, also `--redacted`) and print the hash of the canonical report (`hash`). **Planned:** the checks, the comparison with a manufacturing profile, the review document and a kind of server task.
+* **What exists:** a library and a command line, without a window, that read the results of the checks, give the verdict (`report`, also `--redacted`), write the review document (`review`, also `--redacted`) and print the hash of the canonical report (`hash`). **Planned:** the checks, the comparison with a manufacturing profile and a kind of server task.
 
 ## 🧩 Role in EH3D
 
@@ -106,6 +106,7 @@ EH3D-DESIGN-VERIFIER/
 │   └── adr/                                     the accepted decision records
 ├── AGENTS.md                                    rules for anyone who changes the repository
 ├── src/                                         the library and the command line
+├── config/                                      the example settings file, every key with its default
 ├── Cargo.toml Cargo.lock deny.toml              Rust package and policy of the dependencies
 ├── tools/                                       the repository check, its tests and the picture tools
 ├── images/                                      banner and the Architecture and Repository Structure pictures

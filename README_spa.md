@@ -19,7 +19,7 @@
 
 ---
 
-**Comprobación de honestidad - lo que se ejecuta hoy:** una biblioteca de Rust y una línea de comandos que reúnen de un fichero JSON los resultados de las comprobaciones de un diseño, comprueban que cada hallazgo tiene un código bien formado y nombra su objeto, y dan un veredicto: fallo si un fallo está confirmado, no concluyente si algo no pudo decidirse o no se ejecutó un área requerida, y correcto en otro caso. El informe es canónico (los mismos resultados dan el mismo informe y el mismo hash) y puede imprimirse censurado, solo con recuentos. Todo se ha ejecutado solo con datos hechos por sus propias pruebas. Lo que no existe: las comprobaciones en sí, la comparación con un perfil de fabricación y la exportación de un documento de revisión.
+**Comprobación de honestidad - lo que se ejecuta hoy:** una biblioteca de Rust y una línea de comandos que reúnen de un fichero JSON los resultados de las comprobaciones de un diseño, comprueban que cada hallazgo tiene un código bien formado y nombra su objeto, y dan un veredicto: fallo si un fallo está confirmado, no concluyente si algo no pudo decidirse o no se ejecutó un área requerida, y correcto en otro caso. El informe es canónico (los mismos resultados dan el mismo informe y el mismo hash) y puede imprimirse censurado, solo con recuentos. El documento de revisión (`review`, también `--redacted`) escribe el veredicto, las reglas aplicadas, los datos usados y los hallazgos como texto para archivar y firmar. Todo se ha ejecutado solo con datos hechos por sus propias pruebas. Lo que no existe: las comprobaciones en sí y la comparación con un perfil de fabricación.
 
 ---
 
@@ -46,14 +46,14 @@ Cada línea es una parte de este repositorio y la luz dice hasta dónde llega ho
 | Área | Estado | Qué significa aquí |
 |---|---|---|
 | Comprobaciones del repositorio | 🟡 | La comprobación del repositorio, la de las imágenes y las 3 pruebas de la base se ejecutan en el CI y pasan. |
-| Pruebas | 🟡 | Las 13 pruebas del código Rust y las 3 de la base pasan en un ordenador. Usan solo datos hechos por las propias pruebas. |
+| Pruebas | 🟡 | Las 21 pruebas del código Rust y las 3 de la base pasan en un ordenador. Usan solo datos hechos por las propias pruebas. |
 | Hardware real | 🟠 | No se ha ejecutado en ninguna máquina ni placa: nada de aquí se ha probado en hardware. |
-| Función planificada | 🟠 | Escrito: la clasificación de hallazgos con códigos estables, la identidad del objeto, la separación de confirmado y no concluyente, el informe canónico y el modo censurado. Sin escribir: las comprobaciones, la comparación con un perfil de fabricación y el documento de revisión. |
-| Requisitos | 🟠 | 5 de los 7 requisitos están en prototipo; la comparación con un perfil de fabricación (DVER-005) y el documento de revisión (DVER-006) solo están planificados. Ninguno está validado. |
+| Función planificada | 🟠 | Escrito: la clasificación de hallazgos con códigos estables, la identidad del objeto, la separación de confirmado y no concluyente, el informe canónico, el modo censurado y el documento de revisión. Sin escribir: las comprobaciones y la comparación con un perfil de fabricación. |
+| Requisitos | 🟠 | 6 de los 7 requisitos están en prototipo; la comparación con un perfil de fabricación (DVER-005) solo está planificada. Ninguno está validado. |
 
 ## 🎯 Resumen
 
-* **Lo que existe:** una biblioteca y una línea de comandos, sin ventana, que leen los resultados de las comprobaciones, dan el veredicto (`report`, también `--redacted`) y muestran el hash del informe canónico (`hash`). **Planificado:** las comprobaciones, la comparación con un perfil de fabricación, el documento de revisión y un tipo de tarea del servidor.
+* **Lo que existe:** una biblioteca y una línea de comandos, sin ventana, que leen los resultados de las comprobaciones, dan el veredicto (`report`, también `--redacted`), escriben el documento de revisión (`review`, también `--redacted`) y muestran el hash del informe canónico (`hash`). **Planificado:** las comprobaciones, la comparación con un perfil de fabricación y un tipo de tarea del servidor.
 
 ## 🧩 Papel en EH3D
 
@@ -106,6 +106,7 @@ EH3D-DESIGN-VERIFIER/
 │   └── adr/                                     los registros de decisiones aceptadas
 ├── AGENTS.md                                    reglas para quien cambia el repositorio
 ├── src/                                         la biblioteca y la línea de comandos
+├── config/                                      el fichero de ajustes de ejemplo, cada clave con su valor por defecto
 ├── Cargo.toml Cargo.lock deny.toml              paquete de Rust y política de dependencias
 ├── tools/                                       la comprobación del repositorio, sus pruebas y las herramientas de las imágenes
 ├── images/                                      banner y las imágenes de Arquitectura y Estructura del repositorio
