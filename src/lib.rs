@@ -14,6 +14,7 @@ pub mod cli;
 pub mod config;
 pub mod error;
 pub mod report;
+pub mod review;
 
 pub use error::VerifyError;
 pub use report::{Report, Verdict};

@@ -7,6 +7,7 @@
 use crate::config::Config;
 use crate::error::VerifyError;
 use crate::report::{Report, Results, Verdict};
+use crate::review;
 use std::fs;
 use std::io::Write;
 use std::path::Path;
@@ -16,6 +17,8 @@ eh3d-design-verifier [--config FILE] <command>
 
   report [--redacted] <results.json>       gather the results of the checks into one report and give the verdict
                                            (--redacted prints only counts by code, severity and state, no names)
+  review [--redacted] <results.json>       write the review document: the verdict, the rules applied, the data used and the findings
+                                           (--redacted leaves out the design, the objects, the messages and the rule names)
   hash <results.json>                      print the SHA-256 of the canonical report (the same results give the same hash)
 
 Exit codes: 0 pass, 1 fail, 2 unusable input, 3 inconclusive.
@@ -109,6 +112,16 @@ fn dispatch(args: &[String], out: &mut dyn Write) -> Result<i32, Option<VerifyEr
             let _ = writeln!(out, "# hash {}", report.hash);
             Ok(exit_code(report.verdict))
         }
+        ["review", "--redacted", _] => {
+            let report = load(&args[2])?;
+            let _ = write!(out, "{}", review::render(&report, &config, true));
+            Ok(exit_code(report.verdict))
+        }
+        ["review", _] => {
+            let report = load(&args[1])?;
+            let _ = write!(out, "{}", review::render(&report, &config, false));
+            Ok(exit_code(report.verdict))
+        }
         ["hash", _] => {
             let report = load(&args[1])?;
             let _ = writeln!(out, "{}", report.hash);
@@ -176,6 +189,40 @@ mod tests {
         );
         let (code, hash, _) = call(&["hash", &pass]);
         assert_eq!((code, hash.trim().len()), (0, 64));
+    }
+
+    #[test]
+    fn the_review_writes_the_document_with_the_exit_code_of_the_verdict() {
+        let work = tempfile::tempdir().unwrap();
+        let fail = file(
+            work.path(),
+            "fail.json",
+            format!(
+                r#"{{"design":"d-1","rule_version":"r9",{ALL},"findings":[{{"code":"PHOENIX-DRC-001","severity":"error","state":"confirmed","object":"secret-net","message":"short","rule":"gap v3"}}]}}"#
+            ),
+        );
+        let (code, text, _) = call(&["review", &fail]);
+        assert_eq!(code, 1);
+        assert!(text.starts_with("# Design review\n\n- Design: d-1\n- Verdict: fail\n"));
+        assert!(text.contains("| gap v3 | PHOENIX-DRC-001 | 1 |"), "{text}");
+        assert!(text.contains("- `PHOENIX-DRC-001` confirmed secret-net: short"));
+        let (_, hash, _) = call(&["hash", &fail]);
+        assert!(text.contains(&format!("- Report hash (SHA-256): {}", hash.trim())));
+        let (code, text, _) = call(&["review", "--redacted", &fail]);
+        assert_eq!(code, 1);
+        for secret in ["d-1", "secret-net", "short", "gap v3"] {
+            assert!(!text.contains(secret), "{secret}");
+        }
+        assert!(text.contains("| PHOENIX-DRC-001 | error | confirmed | 1 |"));
+        let cfg = file(
+            work.path(),
+            "c.cfg",
+            "review_max_findings = 1\n".to_string(),
+        );
+        assert_eq!(call(&["--config", &cfg, "review", &fail]).0, 1);
+        assert_eq!(call(&["review"]).0, 2);
+        assert_eq!(call(&["review", "--redacted"]).0, 2);
+        assert_eq!(call(&["review", "no-such-file.json"]).0, 2);
     }
 
     #[test]

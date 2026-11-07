@@ -5,3 +5,6 @@
 *.sh text eol=lf
 *.bat text eol=crlf
 *.cmd text eol=crlf
+
+# The example settings are compared byte for byte with the defaults of the code.
+*.cfg -text

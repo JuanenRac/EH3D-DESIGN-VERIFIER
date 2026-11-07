@@ -115,6 +115,8 @@ pub struct Report {
     pub findings: Vec<Finding>,
     /// The problems of the results.
     pub problems: Vec<Problem>,
+    /// The areas that were run, in lower case and in order.
+    pub areas_run: Vec<String>,
     /// The SHA-256 of the canonical content (design, rule version, areas and findings).
     pub hash: String,
 }
@@ -231,6 +233,7 @@ impl Report {
             verdict,
             findings,
             problems,
+            areas_run: run.iter().cloned().collect(),
             hash: digest.iter().map(|b| format!("{b:02x}")).collect(),
         }
     }

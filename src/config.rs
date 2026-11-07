@@ -14,6 +14,8 @@ pub struct Config {
     pub required_areas: Vec<String>,
     /// A warning that is confirmed also makes the verdict a failure.
     pub fail_on_warning: bool,
+    /// The most findings the review document lists one by one; the rest are counted.
+    pub review_max_findings: usize,
 }
 
 impl Default for Config {
@@ -26,6 +28,7 @@ impl Default for Config {
                 .map(|s| s.to_string())
                 .collect(),
             fail_on_warning: false,
+            review_max_findings: 200,
         }
     }
 }
@@ -39,6 +42,36 @@ fn flag(text: &str) -> Option<bool> {
 }
 
 impl Config {
+    /// The text of the example settings file (`config/verifier.cfg`): every key with its default value and what it does.
+    pub fn default_file() -> String {
+        let d = Config::default();
+        format!(
+            "\
+# Settings of eh3d-design-verifier. Every line is `key = value`; a missing line keeps the value shown here.
+
+# The most bytes a results file may have.
+max_file_bytes = {}
+
+# The most findings a results file may hold.
+max_findings = {}
+
+# The areas that must have been run for the verdict to be a pass (comma separated; empty means nothing is required).
+required_areas = {}
+
+# A warning that is confirmed also makes the verdict a failure (true or false).
+fail_on_warning = {}
+
+# The most findings the review document lists one by one; the rest are only counted.
+review_max_findings = {}
+",
+            d.max_file_bytes,
+            d.max_findings,
+            d.required_areas.join(", "),
+            d.fail_on_warning,
+            d.review_max_findings
+        )
+    }
+
     /// Parse a settings file (`key = value` lines, `#` comments).
     pub fn parse(text: &str) -> Result<Config, VerifyError> {
         let mut config = Config::default();
@@ -81,6 +114,13 @@ impl Config {
                     config.required_areas = list;
                 }
                 "fail_on_warning" => config.fail_on_warning = flag(value).ok_or_else(bad)?,
+                "review_max_findings" => {
+                    let n: usize = value.parse().map_err(|_| bad())?;
+                    if n == 0 {
+                        return Err(bad());
+                    }
+                    config.review_max_findings = n;
+                }
                 _ => {
                     return Err(VerifyError::ConfigUnknownKey {
                         line,
@@ -105,6 +145,14 @@ mod tests {
     }
 
     #[test]
+    fn the_example_file_is_the_default_file_and_parses_to_the_defaults() {
+        let example = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/config/verifier.cfg"));
+        assert_eq!(example, Config::default_file());
+        assert_eq!(Config::parse(example).unwrap(), Config::default());
+        assert_eq!(Config::default().review_max_findings, 200);
+    }
+
+    #[test]
     fn lines_change_values_and_bad_lines_are_refused() {
         let c =
             Config::parse("# c\nrequired_areas = Board, rules\nfail_on_warning = on\n").unwrap();
@@ -126,6 +174,8 @@ mod tests {
             "required_areas = a b\n",
             "max_findings = 0\n",
             "fail_on_warning = maybe\n",
+            "review_max_findings = 0\n",
+            "review_max_findings = many\n",
         ] {
             assert!(
                 matches!(
