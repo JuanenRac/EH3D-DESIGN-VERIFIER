@@ -108,6 +108,7 @@ EH3D-DESIGN-VERIFIER/
 ├── src/                                         ライブラリとコマンドライン
 ├── config/                                      設定ファイルの例（各キーと既定値）
 ├── Cargo.toml Cargo.lock deny.toml              Rust パッケージと依存関係の方針
+├── rust-toolchain.toml                          固定されたRustツールチェーン
 ├── tools/                                       リポジトリ チェック、そのテスト、画像のツール
 ├── images/                                      バナーとアーキテクチャ・リポジトリ構成の図
 ├── .github/                                     CI とダッシュボードのワークフロー、Issue と PR のテンプレート

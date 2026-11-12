@@ -108,6 +108,7 @@ EH3D-DESIGN-VERIFIER/
 ├── src/                                         a biblioteca e a linha de comandos
 ├── config/                                      o ficheiro de definições de exemplo, cada chave com o seu valor por defeito
 ├── Cargo.toml Cargo.lock deny.toml              pacote Rust e política das dependências
+├── rust-toolchain.toml                          a toolchain de Rust fixada
 ├── tools/                                       a verificação do repositório, os seus testes e as ferramentas das imagens
 ├── images/                                      banner e as imagens de Arquitetura e Estrutura do repositório
 ├── .github/                                     fluxos de CI e do painel, modelos de issues e pull requests

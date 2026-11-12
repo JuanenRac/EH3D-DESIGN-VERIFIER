@@ -108,6 +108,7 @@ EH3D-DESIGN-VERIFIER/
 ├── src/                                         库和命令行
 ├── config/                                      示例设置文件，每个键及其默认值
 ├── Cargo.toml Cargo.lock deny.toml              Rust 包与依赖策略
+├── rust-toolchain.toml                          固定的 Rust 工具链
 ├── tools/                                       仓库检查、其测试以及图片工具
 ├── images/                                      横幅图以及架构和仓库结构图片
 ├── .github/                                     CI 与仪表板工作流、Issue 和 PR 模板
