@@ -10,6 +10,14 @@ permissions:
   contents: read
 
 jobs:
+  # Pilot of the reusable validation held once in EH3D-DOCS: it runs next to the job above on the same commit, and the job above goes when both agree.
+  validate-reusable:
+    uses: JuanenRac/EH3D-DOCS/.github/workflows/validate.yml@4610941ddec34b44f54073f0f0acf1ccd1b9ae48
+    with:
+      python-version: "3.12"
+      check-pictures: true
+      run-tool-tests: true
+
   validate:
     name: Validate the repository
     runs-on: ubuntu-latest
