@@ -4,6 +4,7 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **The CI is split in two workflows:** the validation of the repository (manifest, documentation, pictures, tools) stays in `ci.yml` and the Rust jobs move to `rust.yml`, which does not run for a change that only touches Markdown files or pictures, so a change of the documentation no longer builds the code on two systems, and they keep a cache of the build. The names of the jobs are the same.
 - **The Rust toolchain is pinned:** `rust-toolchain.toml` fixes the version of Rust (the same one in every repository of the suite) with `rustfmt` and `clippy`, the workflows install that version and not `stable`, so a new release of Rust cannot turn the CI red by itself.
 - **Review document:** add the `review` command (also `review --redacted`), which writes the report as text to file and sign: the verdict, the rule version, the hash of the report, the version of the tool, the areas that were run, required and missing, the rules applied with the number of findings of each, the findings by severity and the problems found in the results. The same report always gives the same text, text from the results cannot break its layout, and the redacted form carries only codes, severities, states and counts.
 - **New setting:** `review_max_findings` (default 200) limits the findings listed one by one in the review; the rest are counted. `config/verifier.cfg` is the example settings file and a test requires it to equal the defaults of the code.
