@@ -1,6 +1,6 @@
 [package]
 name = "eh3d-design-verifier"
-version = "0.0.2"
+version = "0.0.3"
 edition = "2021"
 rust-version = "1.88"
 description = "Integral verification of a design: gathers the results of the checks of the suite and reports what is confirmed apart from what is inconclusive"

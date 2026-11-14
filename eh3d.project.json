@@ -2,7 +2,7 @@
   "schema_version": "1.1",
   "ecosystem": "EH3D",
   "name": "EH3D-DESIGN-VERIFIER",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "role": "tool",
   "stack": "rust",
   "technologies": [
@@ -17,7 +17,7 @@
   "family": "PHOENIX",
   "parent": null,
   "build": "cargo build --release; cargo test",
-  "notes": "Scaffolding v0.0.2: early code. Integral verification of a design: a Rust library and command line that gather the results of the checks from a JSON file, check that every finding has a well-formed PHOENIX code and names its object, and give a verdict that keeps confirmed failures apart from inconclusive results (a required area that did not run makes the verdict inconclusive). The report is canonical, with a hash, and can be printed redacted with counts only; the review document writes the verdict, the rules applied, the data used and the findings as text. It has only run on data made by its own tests; it runs no check itself, does not read a design, and the comparison with a manufacturing profile is not written.",
+  "notes": "Scaffolding v0.0.3: early code. Integral verification of a design: a Rust library and command line that gather the results of the checks from a JSON file, check that every finding has a well-formed PHOENIX code and names its object, and give a verdict that keeps confirmed failures apart from inconclusive results (a required area that did not run makes the verdict inconclusive). The report is canonical, with a hash, and can be printed redacted with counts only; the review document writes the verdict, the rules applied, the data used and the findings as text. It has only run on data made by its own tests; it runs no check itself, does not read a design, and the comparison with a manufacturing profile is not written.",
   "native_version": {
     "file": "VERSION",
     "pattern": "^(\\d+\\.\\d+\\.\\d+)"
