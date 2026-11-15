@@ -20,4 +20,4 @@ The official state of each capability is in REQUIREMENTS.md: 7 requirements: 6 `
 
 ## Known technical debt and omitted tests
 
-21 tests of the Rust code and the 3 of the base; the Rust tests build their own results and never touch a real design. The review document is compared with a text written by hand for one report; no review has been read by a person who signs it. `cargo deny` is not run yet.
+30 tests of the Rust code and the 3 of the base; the Rust tests build their own results and never touch a real design. Nine of them run the simulation (`src/simulation.rs`): a seeded twin of the checks of the suite, the faults of a check that can be injected (an area that crashed, a finding that could not be decided, a malformed code, a finding without an object, a confirmed error), the recovery that runs the area again and never hides a confirmed error, and the redacted review of a faulty run. What is pending is the proof against the real checks. The review document is compared with a text written by hand for one report; no review has been read by a person who signs it. `cargo deny` is not run yet.

@@ -15,6 +15,7 @@ pub mod config;
 pub mod error;
 pub mod report;
 pub mod review;
+pub mod simulation;
 
 pub use error::VerifyError;
 pub use report::{Report, Verdict};
