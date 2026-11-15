@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **Simulation mode:** add `src/simulation.rs`, a host twin of the checks of the suite: a seeded checker (the same seed gives the same results and the same hash), five injectable faults (a crashed area, an undecided finding, a malformed code, a finding without an object, a confirmed error) and a recovery that runs the area again and never hides a confirmed error. Nine deterministic tests cover them. The manifest now says `evidence: simulator`; nothing has run against the real checks.
+
 ## [0.0.3] - Review document and a report that keeps the areas run
 
 - **The shared validation tools are updated:** the validator also runs the workflow and lessons checks of the suite with their latest rules, including a check to run before every push.
