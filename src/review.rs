@@ -161,7 +161,9 @@ pub fn render(report: &Report, config: &Config, redacted: bool) -> String {
         out.push(String::new());
         let mut rules: BTreeMap<(&str, &str), usize> = BTreeMap::new();
         for f in &report.findings {
-            *rules.entry((f.rule.as_str(), f.code.as_str())).or_insert(0) += 1;
+            *rules
+                .entry((f.rule.as_str(), crate::report::printable_code(&f.code)))
+                .or_insert(0) += 1;
         }
         if rules.is_empty() {
             out.push("No findings were reported.".to_string());
