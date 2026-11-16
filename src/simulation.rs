@@ -171,7 +171,8 @@ pub fn recover(results: &mut Results, twin: &mut CheckerTwin, config: &Config) -
         let well_formed = f.code.starts_with("PHOENIX-") && f.code.split('-').count() == 3;
         let named =
             f.scope == Scope::Design || f.object.as_deref().is_some_and(|o| !o.trim().is_empty());
-        well_formed && named
+        // a confirmed error is a failure of the design: it stays even when it is badly written
+        (well_formed && named) || (f.severity == Severity::Error && f.state == State::Confirmed)
     });
     done + (before - results.findings.len())
 }
@@ -250,6 +251,21 @@ mod tests {
         let mut twin = CheckerTwin::new(77);
         recover(&mut r, &mut twin, &Config::default());
         assert_eq!(build(&r).verdict, Verdict::Fail);
+    }
+
+    #[test]
+    fn a_confirmed_error_with_a_malformed_code_is_not_hidden_by_recovery() {
+        let mut r = results(3);
+        inject(&mut r, &Fault::ConfirmedError);
+        inject(&mut r, &Fault::MalformedCode);
+        assert_eq!(build(&r).verdict, Verdict::Fail);
+        let mut twin = CheckerTwin::new(77);
+        recover(&mut r, &mut twin, &Config::default());
+        assert_eq!(build(&r).verdict, Verdict::Fail);
+        assert!(r
+            .findings
+            .iter()
+            .any(|f| f.severity == Severity::Error && f.state == State::Confirmed));
     }
 
     #[test]
