@@ -18,6 +18,23 @@ fn list(items: &[String]) -> String {
     }
 }
 
+/// What replaces a name of the results (the version of the rules, an area) that is not made of plain characters.
+const MALFORMED_TOKEN: &str = "(malformed value)";
+
+/// A name from the results as it may be printed: itself when it is 1 to 64 letters, digits, dots, dashes, underscores or plus signs, a fixed marker when it is not, so that nothing else can reach the review.
+fn printable_token(text: &str) -> &str {
+    let plain = !text.is_empty()
+        && text.chars().count() <= 64
+        && text
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || matches!(c, '.' | '-' | '_' | '+'));
+    if plain {
+        text
+    } else {
+        MALFORMED_TOKEN
+    }
+}
+
 /// A text from the results put on one line: control characters become spaces and the ends are trimmed.
 fn one_line(text: &str) -> String {
     let spaced: String = text
@@ -89,7 +106,7 @@ pub fn render(report: &Report, config: &Config, redacted: bool) -> String {
     out.push(format!("- Verdict: {}", verdict_word(report.verdict)));
     out.push(format!(
         "- Rule version: {}",
-        one_line(&report.rule_version)
+        printable_token(&report.rule_version)
     ));
     out.push(format!("- Report hash (SHA-256): {}", report.hash));
     out.push(format!(
@@ -112,7 +129,12 @@ pub fn render(report: &Report, config: &Config, redacted: bool) -> String {
     out.push(String::new());
     out.push("## Data used".to_string());
     out.push(String::new());
-    out.push(format!("- Areas run: {}", list(&report.areas_run)));
+    let areas_run: Vec<String> = report
+        .areas_run
+        .iter()
+        .map(|a| printable_token(a).to_string())
+        .collect();
+    out.push(format!("- Areas run: {}", list(&areas_run)));
     out.push(format!(
         "- Areas required: {}",
         list(&config.required_areas)
@@ -478,6 +500,29 @@ mod tests {
         assert!(text.contains("| a\\|b | PHOENIX-DRC-001 | 1 |"));
         assert!(text.contains("- `PHOENIX-DRC-001` confirmed a  b: line one ## Fake heading\n"));
         assert!(!text.contains("\n## Fake heading"));
+    }
+
+    #[test]
+    fn a_rule_version_or_an_area_that_is_not_plain_never_reaches_the_review() {
+        let mut odd = report();
+        odd.rule_version = "SECRET 7\n\n- Verdict: pass".to_string();
+        odd.areas_run = vec!["board".to_string(), "x\n## Fake heading".to_string()];
+        for redacted in [false, true] {
+            let text = render(&odd, &Config::default(), redacted);
+            assert!(!text.contains("SECRET"), "{redacted}: {text}");
+            assert!(!text.contains("Fake heading"), "{redacted}: {text}");
+            assert!(!text.contains("\n- Verdict: pass"), "{redacted}: {text}");
+            assert!(
+                text.contains("- Rule version: (malformed value)\n"),
+                "{redacted}: {text}"
+            );
+            assert!(
+                text.contains("- Areas run: board, (malformed value)\n"),
+                "{redacted}: {text}"
+            );
+        }
+        let plain = render(&report(), &Config::default(), true);
+        assert!(plain.contains("- Rule version: 2.1\n"));
     }
 
     #[test]
