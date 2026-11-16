@@ -121,6 +121,18 @@ pub struct Report {
     pub hash: String,
 }
 
+/// What replaces a code that is not a code when a result is printed: a fixed text, so that nothing the results file wrote there can reach an output.
+pub(crate) const MALFORMED_CODE: &str = "(malformed code)";
+
+/// The code as it may be printed: itself when it is well formed, a fixed marker when it is not.
+pub(crate) fn printable_code(code: &str) -> &str {
+    if code_is_well_formed(code) {
+        code
+    } else {
+        MALFORMED_CODE
+    }
+}
+
 fn code_is_well_formed(code: &str) -> bool {
     let mut parts = code.split('-');
     let ok = parts.next() == Some("PHOENIX");
@@ -242,7 +254,8 @@ impl Report {
     pub fn redacted_counts(&self) -> BTreeMap<String, usize> {
         let mut out = BTreeMap::new();
         for f in &self.findings {
-            let key = format!("{} {:?} {:?}", f.code, f.severity, f.state).to_lowercase();
+            let key = format!("{} {:?} {:?}", printable_code(&f.code), f.severity, f.state)
+                .to_lowercase();
             *out.entry(key).or_insert(0) += 1;
         }
         out
