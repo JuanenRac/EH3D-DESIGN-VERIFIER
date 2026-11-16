@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **A code that is not a code is never printed:** the redacted counts, the redacted review and the findings of the review print the fixed text `(malformed code)` instead of a finding code that does not have the form of a rule code, so text written there by a faulty check can neither leave the machine in the redacted outputs nor break the layout of the review. Tested with a code made of private text and line breaks.
+
 - **Simulation mode:** add `src/simulation.rs`, a host twin of the checks of the suite: a seeded checker (the same seed gives the same results and the same hash), five injectable faults (a crashed area, an undecided finding, a malformed code, a finding without an object, a confirmed error) and a recovery that runs the area again and never hides a confirmed error. Nine deterministic tests cover them. The manifest now says `evidence: simulator`; nothing has run against the real checks.
 
 ## [0.0.3] - Review document and a report that keeps the areas run

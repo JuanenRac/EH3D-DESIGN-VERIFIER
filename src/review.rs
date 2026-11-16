@@ -65,7 +65,12 @@ fn finding_line(f: &Finding) -> String {
         }
     };
     let message = one_line(&f.message);
-    let mut line = format!("- `{}` {} {}", f.code, state_word(f.state), object);
+    let mut line = format!(
+        "- `{}` {} {}",
+        crate::report::printable_code(&f.code),
+        state_word(f.state),
+        object
+    );
     if !message.is_empty() {
         line.push_str(": ");
         line.push_str(&message);
@@ -133,7 +138,7 @@ pub fn render(report: &Report, config: &Config, redacted: bool) -> String {
         let mut rows: BTreeMap<(&str, Severity, State), usize> = BTreeMap::new();
         for f in &report.findings {
             *rows
-                .entry((f.code.as_str(), f.severity, f.state))
+                .entry((crate::report::printable_code(&f.code), f.severity, f.state))
                 .or_insert(0) += 1;
         }
         if rows.is_empty() {
@@ -156,7 +161,9 @@ pub fn render(report: &Report, config: &Config, redacted: bool) -> String {
         out.push(String::new());
         let mut rules: BTreeMap<(&str, &str), usize> = BTreeMap::new();
         for f in &report.findings {
-            *rules.entry((f.rule.as_str(), f.code.as_str())).or_insert(0) += 1;
+            *rules
+                .entry((f.rule.as_str(), crate::report::printable_code(&f.code)))
+                .or_insert(0) += 1;
         }
         if rules.is_empty() {
             out.push("No findings were reported.".to_string());
@@ -471,5 +478,30 @@ mod tests {
         assert!(text.contains("| a\\|b | PHOENIX-DRC-001 | 1 |"));
         assert!(text.contains("- `PHOENIX-DRC-001` confirmed a  b: line one ## Fake heading\n"));
         assert!(!text.contains("\n## Fake heading"));
+    }
+
+    #[test]
+    fn a_code_that_is_not_a_code_never_reaches_the_review() {
+        let mut odd = report();
+        odd.findings = vec![finding(
+            "SECRET net VBAT shorted to GND at U7\n\n- Verdict: pass",
+            Severity::Error,
+            State::Confirmed,
+            Some("U7"),
+            Scope::Object,
+            "a message",
+            "a rule",
+        )];
+        for redacted in [false, true] {
+            let text = render(&odd, &Config::default(), redacted);
+            assert!(!text.contains("SECRET"), "{redacted}: {text}");
+            assert!(!text.contains("VBAT"), "{redacted}: {text}");
+            assert!(text.contains("(malformed code)"), "{redacted}: {text}");
+            assert!(!text.contains("\n- Verdict: pass"), "{redacted}: {text}");
+        }
+        assert!(odd
+            .redacted_counts()
+            .keys()
+            .all(|k| !k.contains("secret") && k.starts_with("(malformed code)")));
     }
 }
