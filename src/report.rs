@@ -426,7 +426,7 @@ mod tests {
             Some("n2"),
         );
         let r = Report::build(&results(vec![a, b], &ALL), &Config::default());
-        assert_eq!(r.hash, "TBD");
+        assert_eq!(r.hash, "00e2568ada2406ea618e22debc8af201041ce7077b5eabf02d238f00e548c1ea");
     }
 
     #[test]
