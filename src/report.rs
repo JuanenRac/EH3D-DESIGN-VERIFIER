@@ -411,6 +411,28 @@ mod tests {
     }
 
     #[test]
+    fn the_hash_of_a_fixed_report_is_the_known_one() {
+        // a fixed vector: a change of the order of the fields or of the way the content is written changes every hash that was ever quoted
+        let a = finding(
+            "PHOENIX-DRC-001",
+            Severity::Error,
+            State::Confirmed,
+            Some("n1"),
+        );
+        let b = finding(
+            "PHOENIX-DRC-002",
+            Severity::Warning,
+            State::Confirmed,
+            Some("n2"),
+        );
+        let r = Report::build(&results(vec![a, b], &ALL), &Config::default());
+        assert_eq!(
+            r.hash,
+            "00e2568ada2406ea618e22debc8af201041ce7077b5eabf02d238f00e548c1ea"
+        );
+    }
+
+    #[test]
     fn the_same_results_in_another_order_give_the_same_report() {
         let a = finding(
             "PHOENIX-DRC-001",
