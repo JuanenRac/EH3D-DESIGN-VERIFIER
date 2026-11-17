@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **The threat model says what the code already does:** the rows of `docs/THREAT_MODEL.md` that have a mitigation in the code and a test for it are marked `partial` and name the tests and what is still not covered; the rows without either stay `planned`.
+
 - **The recovery of the simulation never removes a confirmed error:** a finding that is an error and confirmed stays even when its code is malformed or it names no object, so the verdict of a design with such a finding stays `fail`; a test combines the two faults.
 - **A version of the rules or an area that is not a plain name is never printed:** the review prints the fixed text `(malformed value)` instead of a rule version or an area run that is empty, longer than 64 characters or has anything but letters, digits, dots, dashes, underscores and plus signs.
 - **A code that is not a code is never printed:** the redacted counts, the redacted review and the findings of the review print the fixed text `(malformed code)` instead of a finding code that does not have the form of a rule code, so text written there by a faulty check can neither leave the machine in the redacted outputs nor break the layout of the review. Tested with a code made of private text and line breaks.

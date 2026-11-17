@@ -1,12 +1,12 @@
 # EH3D-DESIGN-VERIFIER: threat model
 
-Basic model for a project that has no code yet. Every row is a plan, not a result: no mitigation exists and no test has been run. The rows are the threats to design against from the first line of code.
+Basic model for early code. The rows marked partial have a mitigation written and tests for it, run only on data made by the tests themselves; the rows marked planned have nothing yet. No row is assessed against real data.
 
 | Threat | Planned mitigation | Planned test | State | Residual risk |
 |---|---|---|---|---|
-| A report that hides a failure (an undecidable case shown as pass) | an explicit inconclusive state; undecidable never maps to pass | negative tests with undecidable inputs | planned | not assessed: nothing is implemented |
-| Reports that leak names, values or paths from a private design | redacted mode | leak test over generated reports | planned | not assessed: nothing is implemented |
-| Corrupt or malicious project or input files (oversized entries, path tricks, deep nesting, resource exhaustion) | name rules, size and depth limits, bounded readers | fuzzing and hostile samples | planned | not assessed: nothing is implemented |
+| A report that hides a failure (an undecidable case shown as pass) | an undecided finding is never a pass, and an area that did not run or crashed makes the verdict inconclusive | `an_undecided_finding_is_never_a_pass`, `a_required_area_that_did_not_run_makes_the_verdict_inconclusive`, `a_crashed_area_makes_the_verdict_inconclusive` | partial | only the cases the tests build; no real design has been reviewed |
+| Reports that leak names, values or paths from a private design | the redacted mode carries only codes and counts, never a message or an object | `the_redacted_counts_carry_no_message_and_no_object`, `the_redacted_review_of_a_faulty_run_leaks_no_object_or_design_name` | partial | the full review carries names by design; only the redacted mode is checked for leaks |
+| Corrupt or malicious project or input files (oversized entries, path tricks, deep nesting, resource exhaustion) | the JSON reader refuses bad syntax, unknown fields and oversized input, and text from the results cannot break the layout of the review | `bad_json_unknown_fields_and_the_size_limits_are_refused`, `text_from_the_results_cannot_break_the_layout` | partial | hostile samples written by hand; no fuzzing yet |
 | Temporary files, logs and reports that reveal private designs | no private data in outputs; redaction | automated pattern search | planned | not assessed: nothing is implemented |
 | Compromised dependency or binary | pinned versions, licence and advisory checks, software bill of materials for releases | CI checks | planned | not assessed: nothing is implemented |
 | Power loss or forced close during a save | atomic write: temporary file, then rename; old file never deleted first | interruption tests at controlled points | planned | not assessed: nothing is implemented |
