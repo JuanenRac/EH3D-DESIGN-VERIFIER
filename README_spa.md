@@ -12,7 +12,7 @@
   <img src="https://img.shields.io/badge/License-GPL%203.0--or--later-blue.svg" alt="GPL 3.0 or later">
   <img src="https://img.shields.io/badge/Stack-Markdown%20%2B%20Python-blue.svg" alt="Markdown and Python">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
-  <img src="https://img.shields.io/badge/Tests-3-2EA043.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/Tests-68-2EA043.svg" alt="Tests">
   <img src="https://img.shields.io/badge/Version-0.0.4-0f6cbd.svg" alt="Version">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
@@ -31,7 +31,7 @@
 |---|---|
 | Versión | `0.0.4` |
 | Madurez | Andamiaje |
-| Pruebas | 3 |
+| Pruebas | 68 |
 | Pila tecnológica | Markdown, Python 3.10+ |
 | En hardware real | Aún no se ha ejecutado en hardware |
 
@@ -45,8 +45,8 @@ Cada línea es una parte de este repositorio y la luz dice hasta dónde llega ho
 
 | Área | Estado | Qué significa aquí |
 |---|---|---|
-| Comprobaciones del repositorio | 🟡 | La comprobación del repositorio, la de las imágenes y las 3 pruebas de la base se ejecutan en el CI y pasan. |
-| Pruebas | 🟡 | Las 43 pruebas del código Rust y las 3 de la base pasan en un ordenador. Usan solo datos hechos por las propias pruebas. Incluyen una simulación con semilla fija de las comprobaciones de la suite, con fallos inyectados y recuperación. |
+| Comprobaciones del repositorio | 🟡 | La comprobación del repositorio, la de las imágenes y las 68 pruebas de la base se ejecutan en el CI y pasan. |
+| Pruebas | 🟡 | Las 57 pruebas del código Rust y las 68 de la base pasan en un ordenador. Usan solo datos hechos por las propias pruebas. Incluyen una simulación con semilla fija de las comprobaciones de la suite, con fallos inyectados y recuperación. |
 | Hardware real | 🟠 | No se ha ejecutado en ninguna máquina ni placa: nada de aquí se ha probado en hardware. |
 | Función planificada | 🟠 | Escrito: la clasificación de hallazgos con códigos estables, la identidad del objeto, la separación de confirmado y no concluyente, el informe canónico, el modo censurado y el documento de revisión. Sin escribir: las comprobaciones y la comparación con un perfil de fabricación. |
 | Requisitos | 🟠 | 6 de los 7 requisitos están en prototipo; la comparación con un perfil de fabricación (DVER-005) solo está planificada. Ninguno está validado. |
@@ -80,7 +80,7 @@ python -I -m unittest discover -s tools -p "test_*.py"
 
 ## 🧪 Pruebas
 
-La base tiene 3 pruebas (`python -I -m unittest discover -s tools -p "test_*.py"`), y pasan. El CI ejecuta la comprobación del repositorio, la de las imágenes y esas pruebas.
+La base tiene 68 pruebas (`python -I -m unittest discover -s tools -p "test_*.py"`), y pasan. El CI ejecuta la comprobación del repositorio, la de las imágenes y esas pruebas.
 
 ## 🏗️ Compilación y publicación
 
