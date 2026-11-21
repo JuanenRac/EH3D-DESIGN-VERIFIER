@@ -46,7 +46,7 @@ Each line is one part of this repository and the light says how far it is today.
 | Area | State | What it means here |
 |---|---|---|
 | Repository checks | 🟡 | The repository check, the check of the pictures and the 3 tests of the base run in CI and pass. |
-| Tests | 🟡 | 30 tests of the Rust code and the 3 of the base pass on a computer. They use only data made by the tests themselves. They include a seeded simulation of the checks of the suite with injected faults and recovery. |
+| Tests | 🟡 | 43 tests of the Rust code and the 3 of the base pass on a computer. They use only data made by the tests themselves. They include a seeded simulation of the checks of the suite with injected faults and recovery. |
 | Real hardware | 🟠 | Not run on any machine or board: nothing here has been tried on hardware. |
 | Planned function | 🟠 | Written: the classification of findings with stable codes, the identity of the object, the separation of confirmed from inconclusive, the canonical report, the redacted mode and the review document. Not written: the checks and the comparison with a manufacturing profile. |
 | Requirements | 🟠 | 6 of the 7 requirements are at prototype; the comparison with a manufacturing profile (DVER-005) is only planned. None is validated. |
@@ -99,13 +99,14 @@ The version lives in the `VERSION` file and in `eh3d.project.json`, and each ver
 EH3D-DESIGN-VERIFIER/
 ├── docs/
 │   ├── architecture.json structure.json         the data of the two pictures
-│   ├── SCOPE.md REQUIREMENTS.md                 what is planned and its requirements
+│   ├── SCOPE.md REQUIREMENTS.md                 the scope, and the register of requirements with the test of each
 │   ├── DEPENDENCIES.md THREAT_MODEL.md          relations with other repositories and the threat model
 │   ├── DECISIONS.md STATUS.md                   decisions that apply here and the honest status
 │   ├── NOT_YET.md RULES.md                      ideas left for later and rules for writing code
 │   └── adr/                                     the accepted decision records
 ├── AGENTS.md                                    rules for anyone who changes the repository
 ├── src/                                         the library and the command line
+├── tests/                                       the check that keeps the register of requirements true
 ├── config/                                      the example settings file, every key with its default
 ├── Cargo.toml Cargo.lock deny.toml              Rust package and policy of the dependencies
 ├── rust-toolchain.toml                          the pinned Rust toolchain
@@ -144,7 +145,11 @@ README and texts exist in English, Spanish, French, Italian, German, Chinese, Ja
 
 * [The conventions of the suite](https://github.com/JuanenRac/EH3D-DOCS/blob/main/docs/CONVENTIONS.md)
 * [Changelog](CHANGELOG.md)
-* [Scope, requirements, dependencies, threat model and decisions](docs/SCOPE.md)
+* [Scope](docs/SCOPE.md): what the program is for, what it will not do and what it never decides.
+* [Requirements](docs/REQUIREMENTS.md): the register of capabilities, the state of each and the test that shows it.
+* [Status](docs/STATUS.md): what exists, what is missing and what is still open.
+* [Not yet](docs/NOT_YET.md): good ideas that are left out of this version.
+* [Rules for changing the repository](AGENTS.md): the rules for anyone who changes the repository.
 
 ## 🤝 Contributing & Community
 

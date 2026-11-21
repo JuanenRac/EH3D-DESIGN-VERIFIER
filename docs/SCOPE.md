@@ -1,37 +1,37 @@
 # EH3D-DESIGN-VERIFIER: scope
 
-Status: **early code**. EH3D-DESIGN-VERIFIER has a library and a command line that gather the results of the checks and give a verdict; most of what this page lists is still planned. This page says what it is meant to do, what it will not do, and where it sits. Nothing has been run on a real design.
+Status: **early code**. EH3D-DESIGN-VERIFIER is a library and a command line that gather the results of the checks of a design from a JSON file, give the verdict and write the review document. It has been tried on data made by its own tests only. This page says what it is for, what it will not do and where it sits among the other programs of the suite.
 
 ## Purpose
 
-EH3D-DESIGN-VERIFIER is planned as an engineering verifier with cross-checks and quality control of the design.
+The integral engineering verifier of the PHOENIX family: the electrical, geometric, mechanical, thermal and manufacturing checks of a design end in one reviewable report in which a confirmed failure is kept apart from a result that could not be decided. The checks themselves belong to other repositories of the suite; this program gathers what they found.
 
-Integral engineering verifier: collects the electrical, geometric, mechanical, thermal and manufacturing checks of a design in one reviewable report.
+## What it does
 
-## What it is planned to do
-
-* Collect design-rule checks, connectivity, schematic-to-board consistency, mechanical constraints, thermal checks and manufacturing rules in one report.
-* Classify every finding as error, warning or information, with a stable code.
-* Link each finding to the design object it concerns, by stable identity.
-* Show the rule applied and the data used; repeat the analysis with the same rule version and get the same result.
-* Tell CONFIRMED failures apart from INCONCLUSIVE results.
-* Check a design against a manufacturing profile and explain what to change to make it fabricable.
-* Export design-review reports. Planned as a library with a command-line interface and a server task kind.
+* Reads the results of the checks (findings with a code, a severity, a state and the object they concern) from a JSON file within a size limit, refusing unknown fields.
+* Checks that each finding has a code of the form `PHOENIX-<AREA>-<NNN>` and names an object (or says that it is about the whole design), and reports the ones that do not.
+* Gives the verdict: fail when a failure is confirmed, inconclusive when something could not be decided or a required area did not run, pass otherwise; the exit code of the command follows the verdict.
+* Prints the canonical report (the same results give the same findings in the same order and the same hash), also redacted to counts only.
+* Writes the review document: the verdict, the rules applied, the data used, the version of the tool and the findings up to a limit set in the settings.
+* Runs a seeded twin of the checks with injectable faults and a recovery that runs an area again and never hides a confirmed error.
 
 ## What it will not do
 
-* It does not repair designs; it reports.
-* It does not decide that a design is safe: limits, interlocks and emergency stops belong to the machine and its controller, and product safety to the applicable standards.
-* It does not replace the rule engine of the board tool; it consumes and combines results.
-* It keeps no private list of error codes: codes come from the registry of the PHOENIX family.
-
-## Planned shape
-
-A library without a window, written in Rust (planned), with a command-line interface and, where it applies, a kind of task for the server. Programs of the suite exchange work through project files or through the server, never by depending on each other.
-
-The package is a single crate (a library and a command line, no window) with `report`, `review` and `hash`; the results of the checks are a JSON file and the settings are a file of `key = value` lines (`config/verifier.cfg` shows every key with its default). The checks themselves and the comparison with a manufacturing profile are not written.
+* It does not run any check and does not read a design: it gathers the results that other programs give it.
+* It does not repair a design; it reports.
+* It does not compare a design with a manufacturing profile yet (see `REQUIREMENTS.md`).
+* It does not keep a private list of error codes: codes come from the registry of the PHOENIX family.
+* It does not claim that anything was proven on a real design: the evidence of every capability is `simulator` or `host-test`.
 
 ## Where it sits
 
-It belongs to the PHOENIX family of the EH3D Fabrication Suite: independent repositories that relate through versioned contracts. The design tool (EH3D-PHOENIX-PCB) does not depend at build time on the repositories that depend on it.
-See DEPENDENCIES.md for the relations, REQUIREMENTS.md for the requirements and STATUS.md for the honest state.
+* **It reads:** a JSON file with the results of the checks and a settings file (`config/verifier.cfg` shows every key with its default).
+* **It writes:** the report, the redacted counts, the hash and the review document, to the standard output or to a file the person names; it never writes to the results it reads.
+* **It is read by:** nothing reads it yet: the server and the clients will read its report as a file once the checks exist.
+* **It depends on:** nothing of the suite at build time; the checks it will gather come from EH3D-PHOENIX-PCB and the other engines.
+
+## What it never decides
+
+Whether a design is safe, and the limits, the interlocks and the emergency stop of any machine, belong to the machine and to the standards that apply, not to this program. A verdict of pass means that no check found a confirmed failure and that every required area ran; it is not a certificate. Nothing here starts motion.
+
+The requirements of the program, with the state of each and the test that shows it, are in `REQUIREMENTS.md`; the state in a paragraph is in `STATUS.md`.

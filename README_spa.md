@@ -46,7 +46,7 @@ Cada línea es una parte de este repositorio y la luz dice hasta dónde llega ho
 | Área | Estado | Qué significa aquí |
 |---|---|---|
 | Comprobaciones del repositorio | 🟡 | La comprobación del repositorio, la de las imágenes y las 3 pruebas de la base se ejecutan en el CI y pasan. |
-| Pruebas | 🟡 | Las 30 pruebas del código Rust y las 3 de la base pasan en un ordenador. Usan solo datos hechos por las propias pruebas. Incluyen una simulación con semilla fija de las comprobaciones de la suite, con fallos inyectados y recuperación. |
+| Pruebas | 🟡 | Las 43 pruebas del código Rust y las 3 de la base pasan en un ordenador. Usan solo datos hechos por las propias pruebas. Incluyen una simulación con semilla fija de las comprobaciones de la suite, con fallos inyectados y recuperación. |
 | Hardware real | 🟠 | No se ha ejecutado en ninguna máquina ni placa: nada de aquí se ha probado en hardware. |
 | Función planificada | 🟠 | Escrito: la clasificación de hallazgos con códigos estables, la identidad del objeto, la separación de confirmado y no concluyente, el informe canónico, el modo censurado y el documento de revisión. Sin escribir: las comprobaciones y la comparación con un perfil de fabricación. |
 | Requisitos | 🟠 | 6 de los 7 requisitos están en prototipo; la comparación con un perfil de fabricación (DVER-005) solo está planificada. Ninguno está validado. |
@@ -99,13 +99,14 @@ La versión vive en el fichero `VERSION` y en `eh3d.project.json`, y cada versi�
 EH3D-DESIGN-VERIFIER/
 ├── docs/
 │   ├── architecture.json structure.json         los datos de las dos imágenes
-│   ├── SCOPE.md REQUIREMENTS.md                 lo planificado y sus requisitos
+│   ├── SCOPE.md REQUIREMENTS.md                 el alcance y el registro de requisitos con la prueba de cada uno
 │   ├── DEPENDENCIES.md THREAT_MODEL.md          relaciones con otros repositorios y modelo de amenazas
 │   ├── DECISIONS.md STATUS.md                   decisiones que se aplican aquí y estado honesto
 │   ├── NOT_YET.md RULES.md                      ideas para más adelante y reglas para escribir código
 │   └── adr/                                     los registros de decisiones aceptadas
 ├── AGENTS.md                                    reglas para quien cambia el repositorio
 ├── src/                                         la biblioteca y la línea de comandos
+├── tests/                                       la prueba que mantiene verdadero el registro de requisitos
 ├── config/                                      el fichero de ajustes de ejemplo, cada clave con su valor por defecto
 ├── Cargo.toml Cargo.lock deny.toml              paquete de Rust y política de dependencias
 ├── rust-toolchain.toml                          la toolchain de Rust fijada
@@ -144,7 +145,11 @@ El README y los textos existen en inglés, español, francés, italiano, alemán
 
 * [Las convenciones de la suite](https://github.com/JuanenRac/EH3D-DOCS/blob/main/docs/CONVENTIONS.md)
 * [Registro de cambios](CHANGELOG.md)
-* [Alcance, requisitos, dependencias, modelo de amenazas y decisiones](docs/SCOPE.md)
+* [Alcance](docs/SCOPE.md): para qué sirve el programa, qué no hará y qué no decide nunca.
+* [Requisitos](docs/REQUIREMENTS.md): el registro de capacidades, el estado de cada una y la prueba que la muestra.
+* [Estado](docs/STATUS.md): qué existe, qué falta y qué sigue abierto.
+* [Todavía no](docs/NOT_YET.md): buenas ideas que quedan fuera de esta versión.
+* [Reglas para cambiar el repositorio](AGENTS.md): las reglas para quien cambie el repositorio.
 
 ## 🤝 Contribuir y comunidad
 
