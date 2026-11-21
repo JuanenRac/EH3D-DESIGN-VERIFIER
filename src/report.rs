@@ -519,4 +519,286 @@ mod tests {
             Err(VerifyError::TooLarge { .. })
         ));
     }
+
+    #[test]
+    fn only_a_code_of_the_form_phoenix_area_and_three_digits_is_printed_as_it_is() {
+        for good in ["PHOENIX-DRC-001", "PHOENIX-A1-123", "PHOENIX-THLA-999"] {
+            assert_eq!(printable_code(good), good);
+        }
+        for bad in [
+            "",
+            "PHOENIX",
+            "PHOENIX-DRC-1",
+            "PHOENIX-DRC-1234",
+            "PHOENIX-drc-001",
+            "PHOENIX--001",
+            "PHOENIX-DRC-00A",
+            "PHOENIX-DRC-001-X",
+            "phoenix-DRC-001",
+            "OTHER-DRC-001",
+            "PHOENIX-DRC-001\n",
+        ] {
+            assert_eq!(printable_code(bad), MALFORMED_CODE, "{bad:?}");
+        }
+    }
+
+    #[test]
+    fn a_confirmed_failure_wins_over_an_undecided_finding_and_an_undecided_error_is_not_a_failure()
+    {
+        let failure = finding(
+            "PHOENIX-DRC-001",
+            Severity::Error,
+            State::Confirmed,
+            Some("a"),
+        );
+        let undecided = finding(
+            "PHOENIX-DRC-002",
+            Severity::Error,
+            State::Inconclusive,
+            Some("b"),
+        );
+        let both = results(vec![failure, undecided.clone()], &ALL);
+        assert_eq!(
+            Report::build(&both, &Config::default()).verdict,
+            Verdict::Fail
+        );
+        let only = results(vec![undecided], &ALL);
+        let report = Report::build(&only, &Config::default());
+        assert_eq!(report.verdict, Verdict::Inconclusive);
+        assert!(report.problems.iter().any(|p| p.code == Code::Undecided));
+    }
+
+    #[test]
+    fn information_never_fails_and_an_undecided_information_does_not_count() {
+        let confirmed = finding(
+            "PHOENIX-DRC-003",
+            Severity::Info,
+            State::Confirmed,
+            Some("a"),
+        );
+        let unsure = finding(
+            "PHOENIX-DRC-004",
+            Severity::Info,
+            State::Inconclusive,
+            Some("b"),
+        );
+        let r = Report::build(&results(vec![confirmed, unsure], &ALL), &Config::default());
+        assert_eq!(r.verdict, Verdict::Pass);
+        assert!(r.problems.is_empty());
+    }
+
+    #[test]
+    fn with_no_area_required_a_design_that_ran_nothing_is_a_pass() {
+        let config = Config {
+            required_areas: vec![],
+            ..Config::default()
+        };
+        let r = Report::build(&results(vec![], &[]), &config);
+        assert_eq!(r.verdict, Verdict::Pass);
+        assert!(r.areas_run.is_empty());
+    }
+
+    #[test]
+    fn the_names_of_the_areas_are_compared_without_the_case_and_come_back_in_lower_case_in_order() {
+        let r = Report::build(
+            &results(
+                vec![],
+                &["SCHEMATIC", "Board", "rules", "MANUFACTURING", "board"],
+            ),
+            &Config::default(),
+        );
+        assert_eq!(r.verdict, Verdict::Pass);
+        assert_eq!(
+            r.areas_run,
+            ["board", "manufacturing", "rules", "schematic"]
+        );
+    }
+
+    #[test]
+    fn a_change_of_the_design_the_rules_or_one_finding_changes_the_hash() {
+        let f = finding(
+            "PHOENIX-DRC-001",
+            Severity::Warning,
+            State::Confirmed,
+            Some("a"),
+        );
+        let base = results(vec![f.clone()], &ALL);
+        let hash = |r: &Results| Report::build(r, &Config::default()).hash;
+        let mut other_design = base.clone();
+        other_design.design = "d-2".into();
+        let mut other_rules = base.clone();
+        other_rules.rule_version = "rules-2".into();
+        let mut other_message = base.clone();
+        other_message.findings[0].message = "another sentence".into();
+        let all = [
+            hash(&base),
+            hash(&other_design),
+            hash(&other_rules),
+            hash(&other_message),
+        ];
+        let distinct: BTreeSet<&String> = all.iter().collect();
+        assert_eq!(distinct.len(), 4);
+    }
+
+    #[test]
+    fn a_finding_about_the_whole_design_needs_no_object_and_one_about_an_object_needs_a_name() {
+        let mut whole = finding("PHOENIX-DRC-001", Severity::Info, State::Confirmed, None);
+        whole.scope = Scope::Design;
+        let blank = finding(
+            "PHOENIX-DRC-002",
+            Severity::Info,
+            State::Confirmed,
+            Some("  "),
+        );
+        let r = Report::build(&results(vec![whole, blank], &ALL), &Config::default());
+        assert_eq!(r.problems.len(), 1);
+        assert_eq!(r.problems[0].code, Code::MissingObject);
+    }
+
+    #[test]
+    fn ten_thousand_findings_are_judged_and_counted_without_a_panic() {
+        let findings: Vec<Finding> = (0..10_000)
+            .map(|n| {
+                finding(
+                    "PHOENIX-DRC-001",
+                    Severity::Warning,
+                    State::Confirmed,
+                    Some(format!("o{n}").as_str()),
+                )
+            })
+            .collect();
+        let r = Report::build(&results(findings, &ALL), &Config::default());
+        assert_eq!(r.verdict, Verdict::Pass);
+        assert_eq!(r.findings.len(), 10_000);
+        assert_eq!(r.redacted_counts().values().sum::<usize>(), 10_000);
+    }
+
+    #[test]
+    fn a_code_that_is_not_a_code_is_counted_under_the_fixed_marker_and_never_under_its_own_text() {
+        let evil = finding(
+            "secret-net-name",
+            Severity::Error,
+            State::Confirmed,
+            Some("a"),
+        );
+        let fine = finding(
+            "PHOENIX-DRC-001",
+            Severity::Error,
+            State::Confirmed,
+            Some("b"),
+        );
+        let r = Report::build(&results(vec![evil, fine], &ALL), &Config::default());
+        let counts = r.redacted_counts();
+        assert_eq!(counts.get("(malformed code) error confirmed"), Some(&1));
+        assert_eq!(counts.get("phoenix-drc-001 error confirmed"), Some(&1));
+        assert!(counts.keys().all(|k| !k.contains("secret")));
+    }
+
+    #[test]
+    fn a_text_that_is_not_a_results_file_is_an_error_and_never_a_panic() {
+        let config = Config::default();
+        for text in [
+            "",
+            " ",
+            "null",
+            "[]",
+            "12",
+            "\"x\"",
+            "{",
+            "{}",
+            "{\"design\":\"d\"}",
+        ] {
+            assert!(
+                matches!(
+                    Results::from_json(text, &config),
+                    Err(VerifyError::BadJson(_))
+                ),
+                "{text:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn exactly_the_most_findings_is_read_and_one_more_is_not() {
+        let f = finding(
+            "PHOENIX-DRC-001",
+            Severity::Info,
+            State::Confirmed,
+            Some("a"),
+        );
+        let config = Config {
+            max_findings: 2,
+            ..Config::default()
+        };
+        let two = serde_json::to_string(&results(vec![f.clone(), f.clone()], &ALL)).unwrap();
+        assert!(Results::from_json(&two, &config).is_ok());
+        let three = serde_json::to_string(&results(vec![f.clone(), f.clone(), f], &ALL)).unwrap();
+        assert!(matches!(
+            Results::from_json(&three, &config),
+            Err(VerifyError::TooLarge { .. })
+        ));
+    }
+
+    #[test]
+    fn a_results_file_written_and_read_again_gives_the_same_report() {
+        let f = finding(
+            "PHOENIX-DRC-001",
+            Severity::Warning,
+            State::Inconclusive,
+            Some("a"),
+        );
+        let original = results(vec![f], &ALL);
+        let text = serde_json::to_string(&original).unwrap();
+        let again = Results::from_json(&text, &Config::default()).unwrap();
+        assert_eq!(again, original);
+        assert_eq!(
+            Report::build(&again, &Config::default()),
+            Report::build(&original, &Config::default())
+        );
+    }
+
+    #[test]
+    fn the_findings_of_the_report_come_sorted_whatever_the_order_they_were_given() {
+        let a = finding(
+            "PHOENIX-DRC-001",
+            Severity::Error,
+            State::Confirmed,
+            Some("x"),
+        );
+        let b = finding(
+            "PHOENIX-DRC-002",
+            Severity::Warning,
+            State::Confirmed,
+            Some("y"),
+        );
+        let c = finding(
+            "PHOENIX-ERC-001",
+            Severity::Info,
+            State::Confirmed,
+            Some("z"),
+        );
+        let forward = Report::build(
+            &results(vec![a.clone(), b.clone(), c.clone()], &ALL),
+            &Config::default(),
+        );
+        let backward = Report::build(&results(vec![c, b, a], &ALL), &Config::default());
+        let mut sorted = forward.findings.clone();
+        sorted.sort();
+        assert_eq!(forward.findings, sorted);
+        assert_eq!(forward, backward);
+    }
+
+    #[test]
+    fn the_severity_and_the_state_are_written_in_lower_case_in_the_results_file() {
+        let f = finding(
+            "PHOENIX-DRC-001",
+            Severity::Error,
+            State::Inconclusive,
+            Some("a"),
+        );
+        let text = serde_json::to_string(&f).unwrap();
+        assert!(text.contains("\"severity\":\"error\""), "{text}");
+        assert!(text.contains("\"state\":\"inconclusive\""), "{text}");
+        assert!(text.contains("\"scope\":\"object\""), "{text}");
+    }
 }
