@@ -3,6 +3,9 @@
 All notable changes to this project are documented here.
 
 ## [Unreleased]
+
+## [0.0.5] - Reports cannot be forged from the results file, and many more tests
+
 - **A text of the results file can no longer write lines of its own in `report`:** a line feed in the design, the rules, a code, an object or a message could add a false verdict or hash line. Control characters are printed as spaces, as `review` already did.
 - **The simulated recovery removes every code the report calls malformed**, such as one in lower case.
 - **7 more tests** of the Rust code: a seeded set judged by the plain rule of the verdict, a results file cut at every place, words that are not a severity or a state and the limit of the review.
