@@ -6,7 +6,7 @@
 //! check ([`Fault`]) and against the recovery ([`recover`]). Nothing here has run against a real check.
 
 use crate::config::Config;
-use crate::report::{Finding, Results, Scope, Severity, State};
+use crate::report::{code_is_well_formed, Finding, Results, Scope, Severity, State};
 
 /// A small deterministic generator (SplitMix64): the same seed always gives the same numbers.
 #[derive(Debug, Clone)]
@@ -168,7 +168,8 @@ pub fn recover(results: &mut Results, twin: &mut CheckerTwin, config: &Config) -
     }
     let before = results.findings.len();
     results.findings.retain(|f| {
-        let well_formed = f.code.starts_with("PHOENIX-") && f.code.split('-').count() == 3;
+        // the same rule as the report, so that nothing the report calls malformed is left after the recovery
+        let well_formed = code_is_well_formed(&f.code);
         let named =
             f.scope == Scope::Design || f.object.as_deref().is_some_and(|o| !o.trim().is_empty());
         // a confirmed error is a failure of the design: it stays even when it is badly written
@@ -316,5 +317,66 @@ mod tests {
         assert!(!redacted.contains("obj-"));
         assert!(!redacted.contains("design-1"));
         assert_eq!(redacted, review::render(&report, &config, true));
+    }
+
+    #[test]
+    fn recovery_leaves_nothing_the_report_calls_malformed() {
+        let config = Config::default();
+        for code in [
+            "PHOENIX-drc-001",
+            "PHOENIX-DRC-1",
+            "PHOENIX--001",
+            "PHOENIX-DRC-abc",
+        ] {
+            let mut r = results(6);
+            r.findings[0].code = code.to_string();
+            r.findings[0].severity = Severity::Warning;
+            assert!(build(&r).problems.iter().any(|p| p.code == Code::BadCode));
+            let mut twin = CheckerTwin::new(1);
+            assert_eq!(recover(&mut r, &mut twin, &config), 1, "{code}");
+            assert!(build(&r).problems.is_empty(), "{code}");
+        }
+    }
+
+    #[test]
+    fn a_seeded_set_of_results_is_judged_by_the_plain_rule() {
+        let mut rng = SimRng::new(404);
+        for round in 0..300 {
+            let mut r = results(rng.next_u64());
+            for f in &mut r.findings {
+                f.severity =
+                    [Severity::Error, Severity::Warning, Severity::Info][rng.below(3) as usize];
+                f.state = [State::Confirmed, State::Inconclusive][rng.below(2) as usize];
+            }
+            if rng.below(4) == 0 {
+                r.areas_run.pop();
+            }
+            let strict = rng.below(2) == 0;
+            let config = Config {
+                fail_on_warning: strict,
+                ..Config::default()
+            };
+            let failed = r.findings.iter().any(|f| {
+                f.state == State::Confirmed
+                    && (f.severity == Severity::Error
+                        || (strict && f.severity == Severity::Warning))
+            });
+            let open = r.areas_run.len() < 4
+                || r.findings
+                    .iter()
+                    .any(|f| f.state == State::Inconclusive && f.severity != Severity::Info);
+            let expected = if failed {
+                Verdict::Fail
+            } else if open {
+                Verdict::Inconclusive
+            } else {
+                Verdict::Pass
+            };
+            let report = Report::build(&r, &config);
+            assert_eq!(report.verdict, expected, "round {round}");
+            let mut turned = r.clone();
+            turned.findings.reverse();
+            assert_eq!(Report::build(&turned, &config), report, "round {round}");
+        }
     }
 }
