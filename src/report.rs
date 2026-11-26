@@ -133,7 +133,7 @@ pub(crate) fn printable_code(code: &str) -> &str {
     }
 }
 
-fn code_is_well_formed(code: &str) -> bool {
+pub(crate) fn code_is_well_formed(code: &str) -> bool {
     let mut parts = code.split('-');
     let ok = parts.next() == Some("PHOENIX");
     let area = parts.next().unwrap_or("");
@@ -800,5 +800,54 @@ mod tests {
         assert!(text.contains("\"severity\":\"error\""), "{text}");
         assert!(text.contains("\"state\":\"inconclusive\""), "{text}");
         assert!(text.contains("\"scope\":\"object\""), "{text}");
+    }
+
+    #[test]
+    fn a_results_file_cut_at_any_place_is_an_error_and_never_a_panic() {
+        let f = finding(
+            "PHOENIX-DRC-001",
+            Severity::Error,
+            State::Confirmed,
+            Some("n\u{e9}t \u{7db2}"),
+        );
+        let text = serde_json::to_string(&results(vec![f], &ALL)).unwrap();
+        for end in (0..text.len()).filter(|i| text.is_char_boundary(*i)) {
+            assert!(
+                matches!(
+                    Results::from_json(&text[..end], &Config::default()),
+                    Err(VerifyError::BadJson(_))
+                ),
+                "cut at {end}"
+            );
+        }
+    }
+
+    #[test]
+    fn a_severity_a_state_or_a_scope_that_is_not_one_is_refused_and_never_read_as_another() {
+        for (field, value) in [
+            ("severity", "\"Error\""),
+            ("severity", "\"fatal\""),
+            ("state", "\"maybe\""),
+            ("scope", "\"board\""),
+        ] {
+            let mut parts = std::collections::BTreeMap::from([
+                ("code", "\"PHOENIX-DRC-001\""),
+                ("severity", "\"error\""),
+                ("state", "\"confirmed\""),
+            ]);
+            parts.insert(field, value);
+            let body: Vec<String> = parts.iter().map(|(k, v)| format!("\"{k}\":{v}")).collect();
+            let text = format!(
+                r#"{{"design":"d","rule_version":"r","findings":[{{{}}}]}}"#,
+                body.join(",")
+            );
+            assert!(
+                matches!(
+                    Results::from_json(&text, &Config::default()),
+                    Err(VerifyError::BadJson(_))
+                ),
+                "{text}"
+            );
+        }
     }
 }

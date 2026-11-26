@@ -46,7 +46,7 @@ Ogni riga è una parte di questo repository e il semaforo dice a che punto è og
 | Area | Stato | Cosa significa qui |
 |---|---|---|
 | Controlli del repository | 🟡 | Il controllo del repository, quello delle immagini e i 68 test della base girano nella CI e passano. |
-| Test | 🟡 | I 57 test del codice Rust e i 68 della base passano su un computer. Usano solo dati prodotti dai test stessi. Includono una simulazione a seme fisso di i controlli della suite, con guasti iniettati e ripristino. |
+| Test | 🟡 | I 64 test del codice Rust e i 68 della base passano su un computer. Usano solo dati prodotti dai test stessi. Includono una simulazione a seme fisso di i controlli della suite, con guasti iniettati e ripristino. |
 | Hardware reale | 🟠 | Non eseguito su nessuna macchina né scheda: nulla qui è stato provato su hardware. |
 | Funzione pianificata | 🟠 | Scritto: la classificazione dei rilievi con codici stabili, l'identità dell'oggetto, la separazione di confermato e non conclusivo, il rapporto canonico, la modalità oscurata e il documento di revisione. Non scritto: i controlli e il confronto con un profilo di produzione. |
 | Requisiti | 🟠 | 6 dei 7 requisiti sono a livello di prototipo; il confronto con un profilo di produzione (DVER-005) è solo pianificato. Nessuno è validato. |

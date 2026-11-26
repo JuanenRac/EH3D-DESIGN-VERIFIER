@@ -36,7 +36,7 @@ fn printable_token(text: &str) -> &str {
 }
 
 /// A text from the results put on one line: control characters become spaces and the ends are trimmed.
-fn one_line(text: &str) -> String {
+pub(crate) fn one_line(text: &str) -> String {
     let spaced: String = text
         .chars()
         .map(|c| if c.is_control() { ' ' } else { c })
@@ -548,5 +548,22 @@ mod tests {
             .redacted_counts()
             .keys()
             .all(|k| !k.contains("secret") && k.starts_with("(malformed code)")));
+    }
+
+    #[test]
+    fn exactly_the_most_findings_of_the_review_leaves_no_line_about_more() {
+        let config = Config {
+            review_max_findings: 4,
+            ..Config::default()
+        };
+        let text = render(&report(), &config, false);
+        assert!(!text.contains("not listed"), "{text}");
+        assert_eq!(
+            text.lines()
+                .filter(|l| l.starts_with("- `PHOENIX-"))
+                .count(),
+            4
+        );
+        assert!(!text.contains("\n\n\n"), "{text}");
     }
 }

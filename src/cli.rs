@@ -7,7 +7,7 @@
 use crate::config::Config;
 use crate::error::VerifyError;
 use crate::report::{Report, Results, Verdict};
-use crate::review;
+use crate::review::{self, one_line};
 use std::fs;
 use std::io::Write;
 use std::path::Path;
@@ -93,21 +93,23 @@ fn dispatch(args: &[String], out: &mut dyn Write) -> Result<i32, Option<VerifyEr
             let _ = writeln!(
                 out,
                 "design {} (rules {}): {:?}",
-                report.design, report.rule_version, report.verdict
+                one_line(&report.design),
+                one_line(&report.rule_version),
+                report.verdict
             );
             for f in &report.findings {
                 let _ = writeln!(
                     out,
                     "{} {:?} {:?} {}: {}",
-                    f.code,
+                    one_line(&f.code),
                     f.severity,
                     f.state,
-                    f.object.as_deref().unwrap_or("(design)"),
-                    f.message
+                    one_line(f.object.as_deref().unwrap_or("(design)")),
+                    one_line(&f.message)
                 );
             }
             for p in &report.problems {
-                let _ = writeln!(out, "{}: {}", p.code.as_str(), p.message);
+                let _ = writeln!(out, "{}: {}", p.code.as_str(), one_line(&p.message));
             }
             let _ = writeln!(out, "# hash {}", report.hash);
             Ok(exit_code(report.verdict))
@@ -248,5 +250,41 @@ mod tests {
         );
         let cfg = file(work.path(), "c.cfg", "required_areas = board\n".to_string());
         assert_eq!(call(&["--config", &cfg, "report", &unsure]).0, 0);
+    }
+
+    #[test]
+    fn a_line_feed_in_the_results_cannot_write_a_line_of_its_own_in_the_report() {
+        let work = tempfile::tempdir().unwrap();
+        let odd = file(
+            work.path(),
+            "odd.json",
+            format!(
+                r#"{{"design":"d\n# hash 0000","rule_version":"r\nverdict: Pass",{ALL},"findings":[{{"code":"x\nPHOENIX-DRC-001","severity":"error","state":"confirmed","object":"o\nforged","message":"m\n# hash 1111"}}]}}"#
+            ),
+        );
+        let (code, text, _) = call(&["report", &odd]);
+        assert_eq!(code, 1);
+        // the heading, the finding, the problem of the code and the hash
+        assert_eq!(text.lines().count(), 4, "{text}");
+        assert_eq!(
+            text.lines().filter(|l| l.starts_with("# hash ")).count(),
+            1,
+            "{text}"
+        );
+        assert!(!text.lines().any(|l| l.starts_with("verdict:")), "{text}");
+    }
+
+    #[test]
+    fn the_redacted_report_of_an_odd_file_prints_no_text_of_the_file() {
+        let work = tempfile::tempdir().unwrap();
+        let odd = file(
+            work.path(),
+            "odd.json",
+            r#"{"design":"SECRET","rule_version":"SECRET","findings":[{"code":"SECRET","severity":"warning","state":"inconclusive","object":"SECRET","message":"SECRET","rule":"SECRET"}]}"#.to_string(),
+        );
+        let (code, text, _) = call(&["report", "--redacted", &odd]);
+        assert_eq!(code, 3);
+        assert!(!text.to_lowercase().contains("secret"), "{text}");
+        assert!(text.starts_with("verdict: Inconclusive\n"), "{text}");
     }
 }

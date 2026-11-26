@@ -46,7 +46,7 @@ Each line is one part of this repository and the light says how far it is today.
 | Area | State | What it means here |
 |---|---|---|
 | Repository checks | 🟡 | The repository check, the check of the pictures and the 68 tests of the base run in CI and pass. |
-| Tests | 🟡 | 57 tests of the Rust code and the 68 of the base pass on a computer. They use only data made by the tests themselves. They include a seeded simulation of the checks of the suite with injected faults and recovery. |
+| Tests | 🟡 | 64 tests of the Rust code and the 68 of the base pass on a computer. They use only data made by the tests themselves. They include a seeded simulation of the checks of the suite with injected faults and recovery. |
 | Real hardware | 🟠 | Not run on any machine or board: nothing here has been tried on hardware. |
 | Planned function | 🟠 | Written: the classification of findings with stable codes, the identity of the object, the separation of confirmed from inconclusive, the canonical report, the redacted mode and the review document. Not written: the checks and the comparison with a manufacturing profile. |
 | Requirements | 🟠 | 6 of the 7 requirements are at prototype; the comparison with a manufacturing profile (DVER-005) is only planned. None is validated. |
