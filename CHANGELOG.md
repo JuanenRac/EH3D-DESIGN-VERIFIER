@@ -4,6 +4,9 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **A name read from a file can no longer forge a line of the output:** line breaks and control characters in the error messages (and Unicode line separators in the reports) are printed as spaces. What is compared, hashed and the exit codes do not change.
+- **1 more test** of the Rust code, for the above.
+
 ## [0.0.5] - Reports cannot be forged from the results file, and many more tests
 
 - **A text of the results file can no longer write lines of its own in `report`:** a line feed in the design, the rules, a code, an object or a message could add a false verdict or hash line. Control characters are printed as spaces, as `review` already did.

@@ -39,7 +39,13 @@ fn printable_token(text: &str) -> &str {
 pub(crate) fn one_line(text: &str) -> String {
     let spaced: String = text
         .chars()
-        .map(|c| if c.is_control() { ' ' } else { c })
+        .map(|c| {
+            if c.is_control() || matches!(c, '\u{2028}' | '\u{2029}') {
+                ' '
+            } else {
+                c
+            }
+        })
         .collect();
     spaced.trim().to_string()
 }

@@ -44,7 +44,7 @@ pub fn run(args: &[String], out: &mut dyn Write, err: &mut dyn Write) -> i32 {
             2
         }
         Err(Some(error)) => {
-            let _ = writeln!(err, "error: {error}");
+            let _ = writeln!(err, "error: {}", one_line(&error.to_string()));
             2
         }
     }
@@ -286,5 +286,34 @@ mod tests {
         assert_eq!(code, 3);
         assert!(!text.to_lowercase().contains("secret"), "{text}");
         assert!(text.starts_with("verdict: Inconclusive\n"), "{text}");
+    }
+
+    #[test]
+    fn names_read_from_the_input_cannot_start_a_line_of_their_own() {
+        let work = tempfile::tempdir().unwrap();
+        let file = |name: &str, text: &str| {
+            let path = work.path().join(name);
+            std::fs::write(&path, text).unwrap();
+            path.to_string_lossy().into_owned()
+        };
+        let call = |list: &[&str]| {
+            let args: Vec<String> = list.iter().map(|s| s.to_string()).collect();
+            let (mut out, mut err) = (Vec::new(), Vec::new());
+            let code = run(&args, &mut out, &mut err);
+            let out = String::from_utf8(out).unwrap();
+            let err = String::from_utf8(err).unwrap();
+            for c in out.chars().chain(err.chars()) {
+                assert!(
+                    c == '\n' || !(c.is_control() || c == '\u{2028}' || c == '\u{2029}'),
+                    "{c:?} in {out}{err}"
+                );
+            }
+            (code, out, err)
+        };
+        let unknown = file("unknown.json", r#"{"x\nforged\u2028":1}"#);
+        let (code, _, err) = call(&["report", &unknown]);
+        assert_eq!(code, 2, "{err}");
+        assert_eq!(err.lines().count(), 1, "{err}");
+        assert!(err.contains("forged"), "{err}");
     }
 }

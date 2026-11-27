@@ -46,7 +46,7 @@ Jede Zeile ist ein Teil dieses Repositorys, und die Ampel sagt, wie weit er heut
 | Bereich | Stand | Was das hier bedeutet |
 |---|---|---|
 | Repository-Prüfungen | 🟡 | Die Repository-Prüfung, die Prüfung der Bilder und die 68 Tests der Basis laufen in der CI und bestehen. |
-| Tests | 🟡 | Die 64 Tests des Rust-Codes und die 68 der Basis bestehen auf einem Rechner. Sie verwenden nur Daten, die die Tests selbst erzeugen. Dazu gehört eine Simulation mit festem Seed für die Prüfungen der Suite, mit eingespeisten Fehlern und Wiederherstellung. |
+| Tests | 🟡 | Die 65 Tests des Rust-Codes und die 68 der Basis bestehen auf einem Rechner. Sie verwenden nur Daten, die die Tests selbst erzeugen. Dazu gehört eine Simulation mit festem Seed für die Prüfungen der Suite, mit eingespeisten Fehlern und Wiederherstellung. |
 | Echte Hardware | 🟠 | Auf keiner Maschine und keiner Platine ausgeführt: nichts hier wurde auf Hardware ausprobiert. |
 | Geplante Funktion | 🟠 | Geschrieben: die Einordnung der Befunde mit stabilen Codes, die Identität des Objekts, die Trennung von bestätigt und nicht entscheidbar, der kanonische Bericht, der geschwärzte Modus und das Prüfdokument. Nicht geschrieben: die Prüfungen und der Vergleich mit einem Fertigungsprofil. |
 | Anforderungen | 🟠 | 6 der 7 Anforderungen sind im Prototyp; der Vergleich mit einem Fertigungsprofil (DVER-005) ist nur geplant. Keine ist validiert. |

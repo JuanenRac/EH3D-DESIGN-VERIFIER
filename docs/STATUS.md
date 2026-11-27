@@ -21,7 +21,7 @@ The official state of each capability is in `REQUIREMENTS.md`. The register has 
 
 ## Known technical debt and omitted tests
 
-* 64 tests of the Rust code (nine of them keep this register true) and the 68 of the base (65 of them test the shared tools of the base); the Rust tests build their own results and never touch a real design.
+* 65 tests of the Rust code (nine of them keep this register true) and the 68 of the base (65 of them test the shared tools of the base); the Rust tests build their own results and never touch a real design.
 * Ten of the tests run the simulation: the faults of a check that can be injected (an area that crashed, a finding that could not be decided, a malformed code, a finding without an object, a confirmed error), the recovery and the redacted review of a faulty run. What is pending is the proof against the real checks.
 * The review document is compared with a text written by hand for one report; no review has been read by a person who signs it.
 * `cargo deny` is not run yet.
