@@ -46,7 +46,7 @@ Cada linha é uma parte deste repositório e a luz diz até onde chega hoje. É 
 | Área | Estado | O que significa aqui |
 |---|---|---|
 | Verificações do repositório | 🟡 | A verificação do repositório, a das imagens e os 68 testes da base correm na CI e passam. |
-| Testes | 🟡 | Os 64 testes do código Rust e os 68 da base passam num computador. Usam apenas dados feitos pelos próprios testes. Incluem uma simulação com semente fixa de as verificações da suite, com falhas injetadas e recuperação. |
+| Testes | 🟡 | Os 65 testes do código Rust e os 68 da base passam num computador. Usam apenas dados feitos pelos próprios testes. Incluem uma simulação com semente fixa de as verificações da suite, com falhas injetadas e recuperação. |
 | Hardware real | 🟠 | Não foi executado em nenhuma máquina nem placa: nada aqui foi experimentado em hardware. |
 | Função planeada | 🟠 | Escrito: a classificação dos achados com códigos estáveis, a identidade do objeto, a separação entre confirmado e inconclusivo, o relatório canónico, o modo censurado e o documento de revisão. Por escrever: as verificações e a comparação com um perfil de fabrico. |
 | Requisitos | 🟠 | 6 dos 7 requisitos estão em protótipo; a comparação com um perfil de fabrico (DVER-005) está apenas planeada. Nenhum está validado. |
