@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+## [0.0.6] - A name read from a file can no longer forge a line of the output
+
 - **A name read from a file can no longer forge a line of the output:** line breaks and control characters in the error messages (and Unicode line separators in the reports) are printed as spaces. What is compared, hashed and the exit codes do not change.
 - **1 more test** of the Rust code, for the above.
 
